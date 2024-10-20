@@ -3,7 +3,7 @@ import hechizoService from '../service/hechizoService';
 
 export default function GestionarHechizos() {
     const [hechizos, setHechizos] = useState([]);
-    const [newHechizo, setNewHechizo] = useState({ nombre: '', poder: 0 });
+    const [newHechizo, setNewHechizo] = useState({ nombre: '', poder: 0, tipo: '' });
     const [editHechizo, setEditHechizo] = useState(null);
     const [hechizoId, setHechizoId] = useState('');
     const [singleHechizo, setSingleHechizo] = useState(null);
@@ -33,7 +33,7 @@ export default function GestionarHechizos() {
         try {
             const response = await hechizoService.createHechizo(newHechizo);
             setHechizos([...hechizos, response.data]);
-            setNewHechizo({ nombre: '', poder: 0 });
+            setNewHechizo({ nombre: '', poder: 0, tipo: '' });
             setSuccess('Hechizo creado exitosamente.');
         } catch (err) {
             setError('Error creando el hechizo.');
@@ -110,6 +110,13 @@ export default function GestionarHechizos() {
                     onChange={(e) => setNewHechizo({ ...newHechizo, poder: parseInt(e.target.value) })}
                     required
                 />
+                <input
+                    type="text"
+                    placeholder="Tipo de Hechizo (fuego, agua, aire, roca)"
+                    value={newHechizo.tipo}
+                    onChange={(e) => setNewHechizo({ ...newHechizo, tipo: e.target.value })}
+                    required
+                />
                 <button type="submit">Crear Hechizo</button>
             </form>
 
@@ -131,6 +138,7 @@ export default function GestionarHechizos() {
                     <p>ID: {singleHechizo.id}</p>
                     <p>Nombre: {singleHechizo.nombre}</p>
                     <p>Poder: {singleHechizo.poder}</p>
+                    <p>Tipo: {singleHechizo.tipo}</p>
                 </div>
             )}
 
@@ -150,11 +158,16 @@ export default function GestionarHechizos() {
                                     value={editHechizo.poder}
                                     onChange={(e) => setEditHechizo({ ...editHechizo, poder: parseInt(e.target.value) })}
                                 />
+                                <input
+                                    type="text"
+                                    value={editHechizo.tipo}
+                                    onChange={(e) => setEditHechizo({ ...editHechizo, tipo: e.target.value })}
+                                />
                                 <button type="submit">Guardar Cambios</button>
                             </form>
                         ) : (
                             <>
-                                Nombre: {hechizo.nombre} - Poder: {hechizo.poder}{' '}
+                                Nombre: {hechizo.nombre} - Poder: {hechizo.poder} - Tipo: {hechizo.tipo}{' '}
                                 <button onClick={() => setEditHechizo(hechizo)}>Editar</button>
                                 <button onClick={() => handleDeleteHechizo(hechizo.id)}>Eliminar</button>
                             </>
@@ -165,3 +178,4 @@ export default function GestionarHechizos() {
         </div>
     );
 }
+

@@ -1,13 +1,13 @@
 import axios from 'axios';
 
-const API_URL = '/api/eventos-magicos/';
+const API_URL = 'http://localhost:8080/api/eventos-magicos/';
 
 const getEventoById = (id) => {
     return axios.get(`${API_URL}${id}`);
 };
 
 const getAllEventos = () => {
-    return axios.get(API_URL);
+    return axios.get(`${API_URL}getAll`);
 };
 
 const createEvento = (eventoData) => {
