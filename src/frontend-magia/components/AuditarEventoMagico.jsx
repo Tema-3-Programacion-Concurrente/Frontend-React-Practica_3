@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import sistemaMagicoService from '../../service/sistemaMagicoService';
+import sistemaMagicoService from '../service/sistemaMagicoService';
 
 export default function AuditarEventoMagico() {
     const [eventoId, setEventoId] = useState(''); // Estado para almacenar el ID del evento

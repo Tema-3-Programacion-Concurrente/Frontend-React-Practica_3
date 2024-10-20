@@ -1,12 +1,12 @@
+// App.js
 import React from 'react';
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
-import AdminPage from './pages/adminPage/page';
-import ResearcherPage from './pages/researcherPage/page';
+import AdminPage from '../frontend-magia/pages/adminPage/page';
 import UserPage from './pages/userPage/page';
 import LoginPage from './components/auth/LoginPage';
 import RegisterPage from './components/auth/RegisterPage';
-import AuthService from './services/authService';
-import HomePage from './pages/homePage/page'; // Asegúrate de importar el componente
+import AuthService from './service/authService';
+import HomePage from './pages/homePage/page';
 
 function ProtectedRoute({ roleRequired, children }) {
     const role = AuthService.getCurrentUserRole();
@@ -31,16 +31,6 @@ function App() {
                     element={
                         <ProtectedRoute roleRequired="admin">
                             <AdminPage />
-                        </ProtectedRoute>
-                    }
-                />
-
-                {/* Ruta para el panel del investigador */}
-                <Route
-                    path="/researcher"
-                    element={
-                        <ProtectedRoute roleRequired="researcher">
-                            <ResearcherPage />
                         </ProtectedRoute>
                     }
                 />

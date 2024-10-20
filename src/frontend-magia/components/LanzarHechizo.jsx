@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import sistemaMagicoService from '../../service/sistemaMagicoService';
+import sistemaMagicoService from '../service/sistemaMagicoService';
 
 export default function LanzarHechizo() {
     const [hechizo, setHechizo] = useState('');

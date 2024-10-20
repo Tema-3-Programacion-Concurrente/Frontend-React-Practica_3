@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import seguridadService from '../../service/seguridadService';
+import seguridadService from '../service/seguridadService';
 
 export default function GestionarSeguridad() {
     const [seguridades, setSeguridades] = useState([]);

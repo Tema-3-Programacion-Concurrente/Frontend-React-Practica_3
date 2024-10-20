@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import hechizoService from '../../service/hechizoService';
+import hechizoService from '../service/hechizoService';
 
 export default function GestionarHechizos() {
     const [hechizos, setHechizos] = useState([]);
