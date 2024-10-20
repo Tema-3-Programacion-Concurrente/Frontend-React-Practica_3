@@ -16,8 +16,8 @@ const registrarEventoMagico = (usuario, hechizo) => {
     });
 };
 
-const auditarEventoMagico = (evento) => {
-    return axios.post(`${API_URL}auditar-evento-magico`, evento);
+const auditarEventoMagico = (eventoId) => {
+    return axios.post(`${API_URL}auditar-evento-magico`, { eventoId });
 };
 
 const sistemaMagicoService = {
