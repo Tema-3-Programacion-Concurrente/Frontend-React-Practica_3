@@ -22,8 +22,6 @@ export default function LoginPage() {
 
                 if (role === 'admin') {
                     navigate('/admin');
-                } else if (role === 'researcher') {
-                    navigate('/researcher');
                 } else {
                     navigate('/user');
                 }

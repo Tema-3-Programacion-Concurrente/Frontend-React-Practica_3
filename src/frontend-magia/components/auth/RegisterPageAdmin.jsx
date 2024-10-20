@@ -111,7 +111,6 @@ export default function RegisterPage() {
                 />
                 <select value={role} onChange={(e) => setRole(e.target.value)} style={styles.input} required>
                     <option value="admin">Administrador</option>
-                    <option value="researcher">Investigador</option>
                 </select>
                 <button type="submit" style={styles.button} disabled={loading}>
                     {loading ? 'Registrando...' : 'Registrar'}
