@@ -1,5 +1,6 @@
 const API_BASE_URL = 'http://localhost:8080/api'; // Ajusta la URL según tu API
 
+// Servicio de login (asegúrate de que se guarden todos los datos correctamente)
 export async function login(email, password) {
     try {
         const response = await fetch(`${API_BASE_URL}/auth/login`, {
@@ -7,7 +8,7 @@ export async function login(email, password) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ correo: email, contrasena: password }), // Enviar correo y contraseña
+            body: JSON.stringify({ correo: email, contrasena: password }),
         });
 
         if (!response.ok) {
@@ -15,25 +16,18 @@ export async function login(email, password) {
         }
 
         const data = await response.json();
-
-        // Guardar el token y el rol
         localStorage.setItem('token', data.token);
-        localStorage.setItem('role', data.role);
-
-        // Guardar toda la información del usuario en localStorage
-        const userInfo = {
-            id: data.id,
+        localStorage.setItem('usuario', JSON.stringify({
+            id: data.userId,
             nombre: data.nombre,
             apellido1: data.apellido1,
             apellido2: data.apellido2,
             correo: data.correo,
-            contrasena: data.contrasena, // Asegúrate de que sea necesario
             telefono: data.telefono,
             direccion: data.direccion,
-            poder: data.poder
-        };
-
-        localStorage.setItem('usuario', JSON.stringify(userInfo));
+            poder: data.poder,
+            role: data.role
+        }));
 
         return data;
     } catch (error) {
@@ -41,6 +35,7 @@ export async function login(email, password) {
         throw error;
     }
 }
+
 
 
 // Servicio de registro

@@ -3,15 +3,15 @@ import sistemaMagicoService from '../service/sistemaMagicoService';
 import hechizoService from '../service/hechizoService';
 
 export default function LanzarHechizo() {
-    const [hechizos, setHechizos] = useState([]);
-    const [selectedHechizo, setSelectedHechizo] = useState('');
+    const [hechizos, setHechizos] = useState([]); // Lista de hechizos completos
+    const [selectedHechizo, setSelectedHechizo] = useState(null); // Hechizo seleccionado
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [usuario, setUsuario] = useState(null);
 
     useEffect(() => {
         try {
-            // Obtener usuario del localStorage y verificar que no sea null o undefined
+            // Obtener usuario del localStorage
             const storedUser = localStorage.getItem('usuario');
             if (storedUser) {
                 const parsedUser = JSON.parse(storedUser);
@@ -46,28 +46,30 @@ export default function LanzarHechizo() {
             return;
         }
 
-        const hechizoSeleccionado = hechizos.find(h => h.id === selectedHechizo);
-
-        if (!hechizoSeleccionado) {
+        // Verificar que se seleccionó un hechizo
+        if (!selectedHechizo) {
             setError('Debes seleccionar un hechizo válido.');
             return;
         }
 
         try {
-            // Información completa del usuario a enviar
+            // Crear el objeto con los datos del usuario y del hechizo seleccionado
             const usuarioData = {
                 id: usuario.id,
                 nombre: usuario.nombre,
                 apellido1: usuario.apellido1,
                 apellido2: usuario.apellido2,
                 correo: usuario.correo,
-                contrasena: usuario.contrasena, // Asegúrate de que esté en tu backend si es necesario
                 telefono: usuario.telefono,
                 direccion: usuario.direccion,
                 poder: usuario.poder
             };
 
-            const response = await sistemaMagicoService.lanzarHechizo(usuarioData, hechizoSeleccionado);
+            console.log("Usuario:", usuarioData);
+            console.log("Hechizo enviado:", selectedHechizo);
+
+            // Enviar el usuario completo y el hechizo completo
+            const response = await sistemaMagicoService.lanzarHechizo(usuarioData, selectedHechizo);
             setSuccess('Hechizo lanzado exitosamente.');
         } catch (err) {
             setError('Error lanzando el hechizo: ' + (err.response?.data || err.message));
@@ -88,8 +90,10 @@ export default function LanzarHechizo() {
                 )}
 
                 <select
-                    value={selectedHechizo}
-                    onChange={(e) => setSelectedHechizo(e.target.value)}
+                    onChange={(e) => {
+                        const hechizo = hechizos.find(h => h.id === parseInt(e.target.value));
+                        setSelectedHechizo(hechizo); // Guardar el hechizo completo
+                    }}
                     required
                 >
                     <option value="">Seleccione un hechizo</option>
