@@ -12,10 +12,6 @@ export default function HomePage() {
                 <button style={styles.button} onClick={() => navigate('/login')}>Iniciar Sesión</button>
                 <button style={styles.button} onClick={() => navigate('/register')}>Registrar Cuenta</button>
             </div>
-            <div style={styles.buttonContainer}>
-                <button style={styles.button} onClick={() => navigate('/admin')}>Panel de Administración</button>
-                <button style={styles.button} onClick={() => navigate('/user')}>Acceso Usuario</button>
-            </div>
         </div>
     );
 }
