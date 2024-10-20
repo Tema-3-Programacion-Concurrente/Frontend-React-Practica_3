@@ -1,10 +1,17 @@
-// UserPage.js
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LanzarHechizo from '../../components/LanzarHechizo';
 
 export default function UserPage() {
     const navigate = useNavigate();
+
+    useEffect(() => {
+        // Verificar si el usuario está autenticado
+        const storedUser = localStorage.getItem('usuario');
+        if (!storedUser) {
+            navigate('/login'); // Redirigir al login si no está autenticado
+        }
+    }, [navigate]);
 
     return (
         <div style={styles.container}>
