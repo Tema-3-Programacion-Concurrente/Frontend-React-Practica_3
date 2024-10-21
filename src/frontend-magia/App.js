@@ -74,6 +74,8 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
+        margin: 0,  // Asegurarse de eliminar cualquier margen del body
+        overflowX: 'hidden', // Evitar cualquier desplazamiento horizontal
     },
     footer: {
         backgroundColor: '#1A1A1D',
@@ -81,9 +83,11 @@ const styles = {
         textAlign: 'center',
         padding: '15px 20px',
         borderTop: '2px solid #B28D42',
+        width: '100vw', // Asegurarse de que el footer ocupe el ancho completo de la pantalla
+        boxSizing: 'border-box', // Asegurarse de que el padding no cause desbordamiento
         position: 'relative',
         bottom: 0,
-        width: '100%',
+        left: 0,  // Asegurar que esté alineado a la izquierda
     },
 };
 
