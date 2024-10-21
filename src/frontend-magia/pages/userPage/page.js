@@ -60,8 +60,8 @@ const styles = {
         width: '30%',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between',  // Espacio entre los apartados
-        height: '90%',  // Ocupa el 90% de la altura de la pantalla
+        justifyContent: 'space-between',
+        height: '90%',
     },
     magicSection: {
         backgroundColor: '#333333',
@@ -70,11 +70,11 @@ const styles = {
         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.6)',
         border: '2px solid #B28D42',
         textAlign: 'center',
-        flex: '1',  // Se asegura que cada contenedor sea proporcional
+        flex: '1',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        marginBottom: '20px',  // Margen inferior entre los contenedores
+        marginBottom: '20px',
     },
     sectionTitle: {
         fontSize: '20px',
