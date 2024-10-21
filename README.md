@@ -2,9 +2,9 @@
 
 # LINKS:
 
-FRONTEND: 
+FRONTEND: https://github.com/Tema-3-Programacion-Concurrente/Frontend-React-Practica_3.git
 
-BACKEND: 
+BACKEND: https://github.com/Tema-3-Programacion-Concurrente/Backend-Springboot-Aspectos.git
 
 
 # PARTICIPANTES
