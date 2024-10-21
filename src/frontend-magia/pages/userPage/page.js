@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import LanzarHechizo from '../../components/LanzarHechizo'; // Importa el componente Lanzar Hechizo
 
 export default function UserPage() {
@@ -15,7 +16,19 @@ export default function UserPage() {
 
     return (
         <div style={styles.pageContainer}>
-            {/* Componente de Lanzar Hechizo */}
+            {/* Fondo del bosque en 8 bits */}
+            <div style={{
+                ...styles.bosque,
+                backgroundImage: 'url("https://64.media.tumblr.com/60721f23d65f6f5cb82c07fefde68713/tumblr_n1dbbe4Ksd1rs0nhyo1_500.gif")'  // Reemplaza con la URL de tu imagen en Google
+            }}></div>
+
+            {/* Personaje en el centro */}
+            <div style={{
+                ...styles.personaje,
+                backgroundImage: 'url("/wizardImage.png")',  // Utiliza la imagen importada
+            }}></div>
+
+
             <div style={styles.leftSection}>
                 <LanzarHechizo />
             </div>
@@ -49,12 +62,40 @@ const styles = {
         justifyContent: 'space-between',
         padding: '20px',
         height: '100vh',
-        backgroundColor: '#1A1A1D',
+        backgroundColor: 'transparent !important', // Forzamos que sea transparente
         color: '#F0E6D2',
         fontFamily: '"Cinzel", serif',
+        position: 'relative', // Necesario para la posición del fondo y el personaje
+        overflowX: 'hidden', // Asegúrate de que no haya desplazamiento horizontal
     },
+    bosque: {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        zIndex: 1, // Asegúrate de que esté detrás de todo
+    },
+
+    personaje: {
+        position: 'fixed',
+        top: '80%',  // Ajusta el valor para colocar el personaje justo sobre la hierba
+        left: '50%',
+        transform: 'translate(-50%, 0)',  // Mantenemos la horizontal centrada y eliminamos el ajuste vertical
+        width: '100px',
+        height: '100px',
+        backgroundSize: 'contain',
+        backgroundRepeat: 'no-repeat',
+        backgroundColor: 'transparent',  // Asegúrate de que el fondo sea transparente
+        zIndex: 1,  // Por encima del fondo pero debajo de los hechizos
+    },
+
+
     leftSection: {
         width: '35%',
+        zIndex: 2, // Por encima del fondo y el personaje
     },
     rightSection: {
         width: '30%',
@@ -62,9 +103,10 @@ const styles = {
         flexDirection: 'column',
         justifyContent: 'space-between',
         height: '90%',
+        zIndex: 2, // Por encima del fondo y el personaje
     },
     magicSection: {
-        backgroundColor: '#333333',
+        backgroundColor: 'rgba(51, 51, 51, 0.7)', // Fondo semitransparente (70% opacidad)
         padding: '20px',
         borderRadius: '10px',
         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.6)',

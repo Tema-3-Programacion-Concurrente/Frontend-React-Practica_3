@@ -94,6 +94,11 @@ export default function FireballAnimation() {
         transition: "left 0.03s linear, top 0.03s linear", // Movimiento más suave y rápido
     };
 
+    const TARGET_POSITION = {
+        x: window.innerWidth / 2,
+        y: window.innerHeight * 0.8  // 80% de la altura de la pantalla
+    };
+
     const fireCoreStyle = {
         position: "absolute",
         width: `${fireballSize * 0.6}px`,
@@ -116,6 +121,8 @@ export default function FireballAnimation() {
         transform: "rotate(-20deg)",
         filter: "blur(6px)", // Más desenfoque en la estela
     };
+
+
 
     // Estilos para la explosión
     const explosionStyle = {

@@ -88,7 +88,7 @@ const Fragment = ({ x, y, size, shape, color, onDisappear }) => {
         boxShadow: "2px 2px 5px rgba(0, 0, 0, 0.5)", // Sombras para más realismo
         clipPath: shape, // Aplicar la forma aleatoria
         left: `calc(50% + ${x}px)`, // Ajustar la posición con respecto al centro
-        top: `calc(50% + ${y}px)`,
+        top: `calc(80% + ${y}px)`, // Se inicia la explosión al 80% de la pantalla
         transform: `rotate(${Math.random() * 360}deg)`, // Rotación aleatoria
         transition: "all 0.1s linear",
         zIndex: 9999, // Aseguramos que los fragmentos estén por encima del contenido
@@ -113,7 +113,7 @@ const DustParticle = ({ x, y, size, color }) => {
         background: color,
         borderRadius: "50%", // Hacer que las partículas de polvo sean circulares
         left: `calc(50% + ${x}px)`,
-        top: `calc(50% + ${y}px)`,
+        top: `calc(80% + ${y}px)`, // Ajuste para el 80% de la pantalla
         opacity: 0.7, // Hacer las partículas algo translúcidas
         transition: "all 0.1s linear",
         zIndex: 9998, // Las partículas están debajo de los fragmentos
@@ -198,7 +198,7 @@ export default function RockExplosionAnimation() {
     const rockContainerStyle = {
         position: "fixed",
         left: "50%",
-        top: "50%",
+        top: "80%", // Mover el contenedor al 80% de la altura de la pantalla
         width: "200px",
         height: "200px",
         transform: "translate(-50%, -50%)",
