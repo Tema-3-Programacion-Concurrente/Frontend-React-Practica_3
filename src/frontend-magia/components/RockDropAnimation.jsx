@@ -1,193 +1,244 @@
 import React, { useState, useEffect } from "react";
 
-// Constantes físicas para la animación de la caída de la roca
-const GRAVITY = 4; // Gravedad simulada
-const AIR_RESISTANCE = 0.005; // Resistencia del aire para la roca
-const ROCK_WIDTH_BASE = 100; // Ancho base de la roca, más grande
+// Constantes para la animación de la explosión de la roca y la onda de polvo
+const FRAGMENTS_COUNT = 20; // Número de fragmentos
+const DUST_PARTICLES_COUNT = 30; // Número de partículas de polvo
+const MIN_EXPLOSION_SPEED = 10; // Velocidad mínima de dispersión
+const MAX_EXPLOSION_SPEED = 20; // Velocidad máxima de dispersión
+const MIN_DUST_SPEED = 5; // Velocidad mínima de dispersión del polvo
+const MAX_DUST_SPEED = 15; // Velocidad máxima de dispersión del polvo
+const GRAVITY = 0.2; // Gravedad simulada
+const MIN_SIZE = 20; // Tamaño mínimo de los fragmentos
+const MAX_SIZE = 50; // Tamaño máximo de los fragmentos
+const FLOOR_LIMIT = window.innerHeight * 0.9; // Límite inferior (90% de la pantalla)
 
-// Configuración de la trayectoria desde la esquina superior derecha hacia el centro de la pantalla
-const INITIAL_POSITION = { x: window.innerWidth + 100, y: -100 }; // Posición inicial
-const TARGET_POSITION = { x: window.innerWidth / 2, y: window.innerHeight / 2 }; // Centro de la pantalla
+// Función para generar fragmentos aleatorios con formas y tamaños distintos
+const generateFragments = () => {
+    const fragments = [];
+    for (let i = 0; i < FRAGMENTS_COUNT; i++) {
+        const size = MIN_SIZE + Math.random() * (MAX_SIZE - MIN_SIZE); // Tamaño variable dentro del rango
+        const angle = Math.random() * 360; // Ángulo aleatorio en grados
 
-// Función modular para calcular la nueva posición de la roca
-const calculatePosition = (t, initialX, initialY, targetX, targetY) => {
-    const velocityX = (targetX - initialX) * Math.exp(-AIR_RESISTANCE * t);
-    const velocityY = (targetY - initialY) * Math.exp(-AIR_RESISTANCE * t) + GRAVITY * t;
-    const x = initialX + velocityX * t;
-    const y = initialY + velocityY * t;
-    return { x, y };
-};
-
-// Función para calcular el ancho oscilante de la roca
-const calculateRockWidth = (t) => {
-    return ROCK_WIDTH_BASE + Math.sin(t * 2) * 20; // Oscila el ancho de la roca
-};
-
-// Función para ajustar el color y las sombras de la roca
-const calculateRockColor = (t) => {
-    const brownTone = Math.floor(180 + Math.sin(t) * 50); // Oscila entre tonalidades de marrón claro
-    return `rgb(${brownTone}, ${brownTone - 50}, ${brownTone - 100})`;
-};
-
-// Generar minirocas con posiciones y tamaños aleatorios
-const generateMiniRocks = (numRocks, centerX, centerY) => {
-    const miniRocks = [];
-    for (let i = 0; i < numRocks; i++) {
-        const size = Math.random() * 20 + 10; // Tamaño aleatorio entre 10 y 30
-        const angle = Math.random() * 2 * Math.PI; // Ángulo aleatorio
-        const distance = Math.random() * 100 + 50; // Distancia aleatoria entre 50 y 150
-        const velocityX = Math.cos(angle) * distance;
-        const velocityY = Math.sin(angle) * distance;
-        miniRocks.push({ x: centerX, y: centerY, size, velocityX, velocityY });
+        fragments.push({
+            id: i,
+            x: 0, // Posición inicial en el centro (relativo a la roca)
+            y: 0,
+            size,
+            angle, // Ángulo para formar la roca
+            vx: 0, // Velocidad inicial en la explosión (se actualizará luego)
+            vy: 0,
+            shape: generateRandomShape(), // Generar una forma aleatoria para el fragmento
+            color: generateRandomColor(), // Generar color aleatorio
+            active: true, // Estado para determinar si el fragmento está activo
+        });
     }
-    return miniRocks;
+    return fragments;
 };
 
-export default function RockDropAnimation() {
-    const [rockPosition, setRockPosition] = useState(INITIAL_POSITION);
-    const [rockWidth, setRockWidth] = useState(ROCK_WIDTH_BASE);
-    const [rockColor, setRockColor] = useState("rgb(180, 130, 80)");
-    const [isFragmenting, setIsFragmenting] = useState(false); // Estado para la fragmentación
-    const [isVisible, setIsVisible] = useState(true); // Estado para mostrar u ocultar la roca
-    const [miniRocks, setMiniRocks] = useState([]); // Estado para las minirocas
-    const [showCrater, setShowCrater] = useState(false); // Estado para mostrar el cráter
+// Función para generar las partículas de polvo
+const generateDustParticles = () => {
+    const particles = [];
+    for (let i = 0; i < DUST_PARTICLES_COUNT; i++) {
+        const angle = Math.random() * 360; // Ángulo aleatorio en grados
+        const speed = Math.random() * (MAX_DUST_SPEED - MIN_DUST_SPEED) + MIN_DUST_SPEED; // Velocidad aleatoria dentro del rango
+        particles.push({
+            id: i,
+            x: 0,
+            y: 0,
+            vx: Math.cos((angle * Math.PI) / 180) * speed, // Velocidad en X según el ángulo
+            vy: Math.sin((angle * Math.PI) / 180) * speed, // Velocidad en Y según el ángulo
+            opacity: 1, // Inicialmente opaco
+        });
+    }
+    return particles;
+};
 
-    useEffect(() => {
-        let t = 0; // Tiempo inicial
-        const animationInterval = setInterval(() => {
-            t += 0.03; // Incremento de tiempo
-            const { x, y } = calculatePosition(
-                t,
-                INITIAL_POSITION.x,
-                INITIAL_POSITION.y,
-                TARGET_POSITION.x,
-                TARGET_POSITION.y
-            );
+// Función para generar una forma aleatoria usando CSS clip-path
+const generateRandomShape = () => {
+    const random = Math.random();
+    if (random < 0.33) {
+        return "polygon(50% 0%, 0% 100%, 100% 100%)"; // Triangular
+    } else if (random < 0.66) {
+        return "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"; // Cuadrada
+    } else {
+        return "polygon(25% 0%, 75% 0%, 100% 50%, 50% 100%, 0% 50%)"; // Forma asimétrica
+    }
+};
 
-            // Detener la animación y activar la fragmentación si llega al centro
-            if (x <= TARGET_POSITION.x + 50 && y >= TARGET_POSITION.y - 50) {
-                clearInterval(animationInterval);
-                setIsFragmenting(true); // Activar la fragmentación
-                setIsVisible(false); // Ocultar la roca
-                setShowCrater(true); // Mostrar el cráter
+// Función para generar un color marrón claro aleatorio con gradientes
+const generateRandomColor = () => {
+    const brownVariations = [
+        "linear-gradient(to bottom, #d2b48c, #a58b5b)",
+        "linear-gradient(to bottom, #deb887, #c19a6b)",
+        "linear-gradient(to bottom, #f4a460, #8b4513)",
+    ];
+    return brownVariations[Math.floor(Math.random() * brownVariations.length)];
+};
 
-                // Generar minirocas
-                const newMiniRocks = generateMiniRocks(20, TARGET_POSITION.x, TARGET_POSITION.y);
-                setMiniRocks(newMiniRocks);
-
-                // Hacer que la fragmentación dure 800ms y restablecer el estado
-                setTimeout(() => {
-                    setIsFragmenting(false); // Detener la fragmentación
-                    setRockPosition(INITIAL_POSITION); // Restablecer la posición inicial
-                    setIsVisible(true); // Mostrar la roca nuevamente
-                    setMiniRocks([]); // Limpiar las minirocas
-                    setShowCrater(false); // Ocultar el cráter
-                }, 800);
-                return;
-            }
-
-            // Calcular el nuevo ancho y color
-            const newWidth = calculateRockWidth(t);
-            const newColor = calculateRockColor(t);
-
-            // Actualizar el estado con las nuevas propiedades
-            setRockPosition({ x, y });
-            setRockWidth(newWidth);
-            setRockColor(newColor);
-        }, 50); // Intervalo de actualización de la animación
-
-        return () => clearInterval(animationInterval); // Limpiar el intervalo cuando el componente se desmonta
-    }, []);
-
-    useEffect(() => {
-        if (isFragmenting) {
-            const fragmentInterval = setInterval(() => {
-                setMiniRocks((prevMiniRocks) =>
-                    prevMiniRocks.map((rock) => ({
-                        ...rock,
-                        x: rock.x + rock.velocityX * 0.1,
-                        y: rock.y + rock.velocityY * 0.1 + GRAVITY * 0.1,
-                        velocityY: rock.velocityY + GRAVITY * 0.1,
-                    }))
-                );
-            }, 50);
-
-            return () => clearInterval(fragmentInterval);
-        }
-    }, [isFragmenting]);
-
-    // Estilos para la roca y sus efectos visuales
-    const rockStyle = {
-        position: "fixed",
-        left: `${rockPosition.x}px`,
-        top: `${rockPosition.y}px`,
-        width: `${rockWidth}px`,
-        height: "auto", // Altura automática para el SVG
-        transition: "left 0.03s linear, top 0.03s linear", // Movimiento más suave y rápido
-    };
-
-    // Estilos para las minirocas
-    const miniRockStyle = (x, y, size) => ({
-        position: "fixed",
-        left: `${x}px`,
-        top: `${y}px`,
+// Componente individual de fragmento
+const Fragment = ({ x, y, size, shape, color, onDisappear }) => {
+    const fragmentStyle = {
+        position: "absolute",
         width: `${size}px`,
         height: `${size}px`,
-        borderRadius: "50%",
-        background: "rgb(180, 130, 80)",
-        boxShadow: `0 0 10px rgba(130, 80, 30, 0.7), 0 0 20px rgba(180, 130, 80, 0.5)`,
-    });
+        background: color, // Color marrón con gradientes
+        border: "1px solid #2c1d12", // Bordes para simular grietas
+        boxShadow: "2px 2px 5px rgba(0, 0, 0, 0.5)", // Sombras para más realismo
+        clipPath: shape, // Aplicar la forma aleatoria
+        left: `calc(50% + ${x}px)`, // Ajustar la posición con respecto al centro
+        top: `calc(50% + ${y}px)`,
+        transform: `rotate(${Math.random() * 360}deg)`, // Rotación aleatoria
+        transition: "all 0.1s linear",
+    };
 
-    // Estilos para el cráter
-    const craterStyle = {
+    // Desaparecer fragmento
+    useEffect(() => {
+        if (y >= FLOOR_LIMIT) {
+            onDisappear(); // Llamar a la función cuando el fragmento alcanza el límite inferior
+        }
+    }, [y, onDisappear]);
+
+    return <div style={fragmentStyle}></div>;
+};
+
+// Componente individual de partícula de polvo
+const DustParticle = ({ x, y, opacity }) => {
+    const particleStyle = {
+        position: "absolute",
+        width: "10px",
+        height: "10px",
+        background: "rgba(169, 169, 169, 0.5)", // Color grisáceo semi-transparente
+        borderRadius: "50%", // Forma circular
+        left: `calc(50% + ${x}px)`, // Ajustar la posición con respecto al centro
+        top: `calc(50% + ${y}px)`,
+        opacity: opacity,
+        transition: "all 0.1s linear",
+    };
+
+    return <div style={particleStyle}></div>;
+};
+
+// Componente principal
+export default function RockExplosionAnimation() {
+    const [fragments, setFragments] = useState(generateFragments());
+    const [dustParticles, setDustParticles] = useState([]); // Estado para las partículas de polvo
+    const [isExploded, setIsExploded] = useState(false); // Estado para controlar la explosión
+    const [timerActive, setTimerActive] = useState(true); // Temporizador para la explosión
+
+    // Función para iniciar la explosión
+    const triggerExplosion = () => {
+        // Fragmentos de roca
+        setFragments((prevFragments) =>
+            prevFragments.map((fragment) => {
+                const angleInRadians = (fragment.angle * Math.PI) / 180; // Convertir ángulo a radianes
+                const speed = Math.random() * (MAX_EXPLOSION_SPEED - MIN_EXPLOSION_SPEED) + MIN_EXPLOSION_SPEED; // Velocidad aleatoria dentro de un rango
+                return {
+                    ...fragment,
+                    vx: Math.cos(angleInRadians) * speed, // Velocidad en X según el ángulo
+                    vy: Math.sin(angleInRadians) * speed, // Velocidad en Y según el ángulo
+                };
+            })
+        );
+
+        // Generar partículas de polvo
+        setDustParticles(generateDustParticles());
+        setIsExploded(true); // Marcar como explotado
+    };
+
+    // Efecto para activar la explosión después de 1 segundo
+    useEffect(() => {
+        if (timerActive) {
+            const explosionTimeout = setTimeout(() => {
+                triggerExplosion();
+                setTimerActive(false); // Desactivar el temporizador
+            }, 1000);
+
+            return () => clearTimeout(explosionTimeout); // Limpiar el timeout al desmontar el componente
+        }
+    }, [timerActive]);
+
+    // Efecto para simular el movimiento de los fragmentos tras la explosión
+    useEffect(() => {
+        if (isExploded) {
+            const animationInterval = setInterval(() => {
+                setFragments((prevFragments) =>
+                    prevFragments.map((fragment) => {
+                        const newY = fragment.y + fragment.vy + GRAVITY; // Actualizar posición Y con gravedad
+                        const newX = fragment.x + fragment.vx; // Actualizar posición X
+                        return {
+                            ...fragment,
+                            x: newX, // Actualizar posición X
+                            y: newY, // Actualizar posición Y
+                            vx: fragment.vx * 0.98, // Simular fricción en X
+                            vy: fragment.vy + GRAVITY, // Acelerar por la gravedad
+                        };
+                    })
+                );
+
+                // Mover y desvanecer las partículas de polvo
+                setDustParticles((prevParticles) =>
+                    prevParticles.map((particle) => {
+                        return {
+                            ...particle,
+                            x: particle.x + particle.vx,
+                            y: particle.y + particle.vy,
+                            opacity: particle.opacity - 0.02, // Disminuir opacidad gradualmente
+                        };
+                    }).filter((particle) => particle.opacity > 0) // Eliminar partículas cuando se desvanezcan
+                );
+            }, 50); // Animación se actualiza cada 50ms
+
+            return () => clearInterval(animationInterval); // Limpiar el intervalo cuando el componente se desmonta
+        }
+    }, [isExploded]);
+
+    // Función para eliminar fragmentos cuando desaparecen
+    const handleFragmentDisappear = (id) => {
+        setFragments((prevFragments) =>
+            prevFragments.filter((fragment) => fragment.id !== id)
+        );
+    };
+
+    // Estilos para el contenedor de la roca y los fragmentos
+    const rockContainerStyle = {
         position: "fixed",
-        left: `${TARGET_POSITION.x - 100}px`, // Centrar el cráter
-        top: `${TARGET_POSITION.y - 20}px`,
+        left: "50%",
+        top: "50%",
         width: "200px",
-        height: "40px",
-        borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(100, 50, 0, 1) 0%, rgba(50, 25, 0, 0.7) 50%, rgba(100, 50, 0, 0.5) 100%)",
-        boxShadow: `0 0 50px rgba(50, 25, 0, 0.8), 0 0 100px rgba(100, 50, 0, 0.5)`,
-        animation: "expand-crater 0.8s ease-out forwards",
+        height: "200px",
+        transform: "translate(-50%, -50%)",
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "center",
+        alignItems: "center",
     };
 
     return (
-        <>
-            {/* Roca (se oculta si hay una fragmentación) */}
-            {isVisible && !isFragmenting && (
-                <svg
-                    style={rockStyle}
-                    viewBox="0 0 100 100"
-                >
-                    <path
-                        d="M10 30 Q 25 10, 40 30 T 70 30 Q 85 50, 70 70 T 40 70 Q 25 50, 10 30 Z"
-                        fill={rockColor}
-                        stroke="rgba(130, 80, 30, 0.7)"
-                        strokeWidth="2"
-                        style={{ filter: "blur(2px)" }}
+        <div>
+            {/* Contenedor de la roca (antes de la explosión) */}
+            <div style={rockContainerStyle}>
+                {fragments.map((fragment) => (
+                    <Fragment
+                        key={fragment.id}
+                        x={fragment.x}
+                        y={fragment.y}
+                        size={fragment.size}
+                        shape={fragment.shape}
+                        color={fragment.color}
+                        onDisappear={() => handleFragmentDisappear(fragment.id)}
                     />
-                </svg>
-            )}
-            {/* Fragmentación al llegar al centro */}
-            {isFragmenting && miniRocks.map((rock, index) => (
-                <div key={index} style={miniRockStyle(rock.x, rock.y, rock.size)}></div>
+                ))}
+            </div>
+
+            {/* Mostrar partículas de polvo */}
+            {dustParticles.map((particle) => (
+                <DustParticle
+                    key={particle.id}
+                    x={particle.x}
+                    y={particle.y}
+                    opacity={particle.opacity}
+                />
             ))}
-            {/* Cráter al impactar */}
-            {showCrater && <div style={craterStyle}></div>}
-            {/* Keyframes para la fragmentación y el cráter */}
-            <style>
-                {`
-                    @keyframes expand-crater {
-                        0% {
-                            transform: scale(1);
-                        }
-                        100% {
-                            transform: scale(1.5);
-                            opacity: 0;
-                        }
-                    }
-                `}
-            </style>
-        </>
+        </div>
     );
 }
