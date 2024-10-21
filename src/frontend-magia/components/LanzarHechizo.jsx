@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import sistemaMagicoService from '../service/sistemaMagicoService';
 import hechizoService from '../service/hechizoService';
 import FireballAnimation from './FireballAnimation';
+import WaterDropAnimation from './WaterDropAnimation'; // Importar la animación de la gota de agua
 
 export default function LanzarHechizo() {
     const [hechizos, setHechizos] = useState([]);
@@ -10,6 +11,7 @@ export default function LanzarHechizo() {
     const [success, setSuccess] = useState('');
     const [usuario, setUsuario] = useState(null);
     const [isFireballLaunched, setIsFireballLaunched] = useState(false);
+    const [isWaterDropLaunched, setIsWaterDropLaunched] = useState(false); // Estado para la animación de la gota de agua
 
     useEffect(() => {
         try {
@@ -40,7 +42,8 @@ export default function LanzarHechizo() {
         e.preventDefault();
         setError('');
         setSuccess('');
-        setIsFireballLaunched(false); // Reiniciar el estado de la animación
+        setIsFireballLaunched(false); // Reiniciar el estado de la animación de fuego
+        setIsWaterDropLaunched(false); // Reiniciar el estado de la animación de agua
 
         if (!usuario) {
             setError('Usuario no autenticado.');
@@ -65,9 +68,12 @@ export default function LanzarHechizo() {
 
             setSuccess('Hechizo lanzado exitosamente.');
 
-            // Verificar si el hechizo seleccionado es de tipo fuego
-            if (selectedHechizo.nombre.toLowerCase() === 'fuego') {
+            // Verificar el tipo de hechizo seleccionado y lanzar la animación correspondiente
+            const hechizoTipo = selectedHechizo.nombre.toLowerCase();
+            if (hechizoTipo === 'fuego') {
                 setIsFireballLaunched(true); // Lanzar la bola de fuego
+            } else if (hechizoTipo === 'agua') {
+                setIsWaterDropLaunched(true); // Lanzar la gota de agua
             }
         } catch (err) {
             setError('Error lanzando el hechizo: ' + (err.response?.data || err.message));
@@ -107,8 +113,11 @@ export default function LanzarHechizo() {
                 <button type="submit">Lanzar Hechizo</button>
             </form>
 
-            {/* Mostrar la animación solo si el hechizo es de tipo "fuego" */}
+            {/* Mostrar la animación si el hechizo es de tipo "fuego" */}
             {isFireballLaunched && <FireballAnimation />}
+
+            {/* Mostrar la animación si el hechizo es de tipo "agua" */}
+            {isWaterDropLaunched && <WaterDropAnimation />}
         </div>
     );
 }
