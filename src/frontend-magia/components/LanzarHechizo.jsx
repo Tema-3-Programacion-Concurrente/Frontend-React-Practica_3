@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import sistemaMagicoService from '../service/sistemaMagicoService';
 import hechizoService from '../service/hechizoService';
 import FireballAnimation from './FireballAnimation';
-import WaterDropAnimation from './WaterDropAnimation'; // Importar la animación de la gota de agua
+import WaterStreamAnimation from './WaterDropAnimation';
+import AirGustAnimation from './AirGustAnimation'; // Importar la animación de la ráfaga de aire
 
 export default function LanzarHechizo() {
     const [hechizos, setHechizos] = useState([]);
@@ -11,7 +12,8 @@ export default function LanzarHechizo() {
     const [success, setSuccess] = useState('');
     const [usuario, setUsuario] = useState(null);
     const [isFireballLaunched, setIsFireballLaunched] = useState(false);
-    const [isWaterDropLaunched, setIsWaterDropLaunched] = useState(false); // Estado para la animación de la gota de agua
+    const [isWaterStreamLaunched, setIsWaterStreamLaunched] = useState(false);
+    const [isAirGustLaunched, setIsAirGustLaunched] = useState(false); // Estado para la ráfaga de aire
 
     useEffect(() => {
         try {
@@ -42,8 +44,9 @@ export default function LanzarHechizo() {
         e.preventDefault();
         setError('');
         setSuccess('');
-        setIsFireballLaunched(false); // Reiniciar el estado de la animación de fuego
-        setIsWaterDropLaunched(false); // Reiniciar el estado de la animación de agua
+        setIsFireballLaunched(false);
+        setIsWaterStreamLaunched(false);
+        setIsAirGustLaunched(false); // Reiniciar todas las animaciones
 
         if (!usuario) {
             setError('Usuario no autenticado.');
@@ -68,12 +71,13 @@ export default function LanzarHechizo() {
 
             setSuccess('Hechizo lanzado exitosamente.');
 
-            // Verificar el tipo de hechizo seleccionado y lanzar la animación correspondiente
-            const hechizoTipo = selectedHechizo.nombre.toLowerCase();
-            if (hechizoTipo === 'fuego') {
+            // Verificar el tipo de hechizo seleccionado
+            if (selectedHechizo.nombre.toLowerCase() === 'fuego') {
                 setIsFireballLaunched(true); // Lanzar la bola de fuego
-            } else if (hechizoTipo === 'agua') {
-                setIsWaterDropLaunched(true); // Lanzar la gota de agua
+            } else if (selectedHechizo.nombre.toLowerCase() === 'agua') {
+                setIsWaterStreamLaunched(true); // Lanzar el chorro de agua
+            } else if (selectedHechizo.nombre.toLowerCase() === 'aire') {
+                setIsAirGustLaunched(true); // Lanzar la ráfaga de aire
             }
         } catch (err) {
             setError('Error lanzando el hechizo: ' + (err.response?.data || err.message));
@@ -113,11 +117,10 @@ export default function LanzarHechizo() {
                 <button type="submit">Lanzar Hechizo</button>
             </form>
 
-            {/* Mostrar la animación si el hechizo es de tipo "fuego" */}
+            {/* Mostrar la animación según el tipo de hechizo */}
             {isFireballLaunched && <FireballAnimation />}
-
-            {/* Mostrar la animación si el hechizo es de tipo "agua" */}
-            {isWaterDropLaunched && <WaterDropAnimation />}
+            {isWaterStreamLaunched && <WaterStreamAnimation />}
+            {isAirGustLaunched && <AirGustAnimation />}
         </div>
     );
 }
