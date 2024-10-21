@@ -76,26 +76,29 @@ const styles = {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundImage: 'url("https://source.unsplash.com/1600x900/?technology")',
+        backgroundImage: 'url("https://source.unsplash.com/1600x900/?magic,night")', // Fondo más mágico
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
+        fontFamily: '"Cinzel", serif', // Tipografía mágica
     },
     formContainer: {
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        backgroundColor: 'rgba(26, 26, 29, 0.9)', // Fondo oscuro semitransparente
         padding: '40px 30px',
         borderRadius: '8px',
-        boxShadow: '0 8px 20px rgba(0, 0, 0, 0.2)',
+        boxShadow: '0 8px 20px rgba(0, 0, 0, 0.7)', // Sombra más oscura
         width: '100%',
         maxWidth: '400px',
         textAlign: 'center',
         backdropFilter: 'blur(5px)',
+        border: '2px solid #B28D42', // Borde dorado para estilo mágico
     },
     title: {
         fontSize: '32px',
         marginBottom: '30px',
-        color: '#2c3e50',
+        color: '#F0E6D2', // Texto claro
         fontWeight: 'bold',
+        letterSpacing: '2px', // Espaciado mágico
     },
     form: {
         display: 'flex',
@@ -104,35 +107,38 @@ const styles = {
     input: {
         padding: '12px 15px',
         margin: '10px 0',
-        border: '1px solid #ddd',
+        border: '1px solid #B28D42', // Borde dorado
         borderRadius: '5px',
         fontSize: '16px',
+        backgroundColor: '#333333', // Fondo oscuro para el input
+        color: '#F0E6D2', // Texto claro
         outline: 'none',
         transition: 'border-color 0.3s',
     },
     inputFocus: {
-        borderColor: '#3498db',
+        borderColor: '#C59B5F', // Borde dorado claro al hacer focus
     },
     button: {
         padding: '15px',
         marginTop: '20px',
-        backgroundColor: '#3498db',
-        color: '#fff',
+        backgroundColor: '#B28D42', // Color dorado en el botón
+        color: '#1A1A1D', // Texto oscuro
         border: 'none',
         borderRadius: '5px',
         fontSize: '18px',
         cursor: 'pointer',
         transition: 'background-color 0.3s',
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.5)', // Sombra para el botón
     },
     buttonHover: {
-        backgroundColor: '#2980b9',
+        backgroundColor: '#C59B5F', // Efecto hover más claro
     },
     text: {
         marginTop: '20px',
-        color: '#7f8c8d',
+        color: '#F0E6D2', // Texto claro
     },
     link: {
-        color: '#3498db',
+        color: '#B28D42', // Enlace dorado
         cursor: 'pointer',
         textDecoration: 'none',
         fontWeight: 'bold',
@@ -143,3 +149,4 @@ const styles = {
         marginBottom: '15px',
     },
 };
+

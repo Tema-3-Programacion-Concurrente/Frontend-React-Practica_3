@@ -23,39 +23,68 @@ function ProtectedRoute({ roleRequired, children }) {
 
 function App() {
     return (
-        <BrowserRouter>
-            <Routes>
-                {/* Ruta para el panel del administrador */}
-                <Route
-                    path="/admin"
-                    element={
-                        <ProtectedRoute roleRequired="admin">
-                            <AdminPage />
-                        </ProtectedRoute>
-                    }
-                />
+        <div style={styles.body}>
+            <BrowserRouter>
+                <Routes>
+                    {/* Ruta protegida para el panel del administrador */}
+                    <Route
+                        path="/admin"
+                        element={
+                            <ProtectedRoute roleRequired="admin">
+                                <AdminPage />
+                            </ProtectedRoute>
+                        }
+                    />
 
-                {/* Ruta para el panel del usuario */}
-                <Route
-                    path="/user"
-                    element={
-                        <ProtectedRoute roleRequired="user">
-                            <UserPage />
-                        </ProtectedRoute>
-                    }
-                />
+                    {/* Ruta protegida para el panel del usuario */}
+                    <Route
+                        path="/user"
+                        element={
+                            <ProtectedRoute roleRequired="user">
+                                <UserPage />
+                            </ProtectedRoute>
+                        }
+                    />
 
-                {/* Ruta de login */}
-                <Route path="/login" element={<LoginPage />} />
+                    {/* Ruta de login */}
+                    <Route path="/login" element={<LoginPage />} />
 
-                {/* Ruta de registro */}
-                <Route path="/register" element={<RegisterPage />} />
+                    {/* Ruta de registro */}
+                    <Route path="/register" element={<RegisterPage />} />
 
-                {/* Ruta por defecto muestra la página de inicio */}
-                <Route path="/" element={<HomePage />} />
-            </Routes>
-        </BrowserRouter>
+                    {/* Ruta por defecto muestra la página de inicio */}
+                    <Route path="/" element={<HomePage />} />
+                </Routes>
+
+                {/* Footer añadido */}
+                <footer style={styles.footer}>
+                    <p>Sistema Mágico © 2024</p>
+                </footer>
+            </BrowserRouter>
+        </div>
     );
 }
+
+// Estilos en línea
+const styles = {
+    body: {
+        backgroundColor: '#1A1A1D', // Cambiar color de fondo
+        color: '#F0E6D2', // Color del texto
+        minHeight: '100vh', // Altura mínima
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+    },
+    footer: {
+        backgroundColor: '#1A1A1D',
+        color: '#F0E6D2',
+        textAlign: 'center',
+        padding: '15px 20px',
+        borderTop: '2px solid #B28D42',
+        position: 'relative',
+        bottom: 0,
+        width: '100%',
+    },
+};
 
 export default App;
