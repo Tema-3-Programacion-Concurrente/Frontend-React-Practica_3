@@ -15,7 +15,7 @@ export default function LanzarHechizo() {
     const [isFireballLaunched, setIsFireballLaunched] = useState(false);
     const [isWaterStreamLaunched, setIsWaterStreamLaunched] = useState(false);
     const [isAirGustLaunched, setIsAirGustLaunched] = useState(false);
-    const [isRockExplosionLaunched, setIsRockExplosionLaunched] = useState(false); // Estado para la roca
+    const [isRockExplosionLaunched, setIsRockExplosionLaunched] = useState(false);
 
     useEffect(() => {
         try {
@@ -89,19 +89,18 @@ export default function LanzarHechizo() {
         }
     };
 
-    // Estilos CSS en línea para la estética del Ministerio de Magia
     const styles = {
         container: {
-            backgroundColor: '#1A1A1D', // Fondo oscuro elegante
-            color: '#F0E6D2', // Color claro para texto
+            backgroundColor: '#1A1A1D',
+            color: '#F0E6D2',
             padding: '20px',
-            width: '300px', // Anchura para alinearlo a la izquierda
-            position: 'fixed', // Posición fija en la izquierda
+            width: '300px',
+            position: 'fixed',
             left: '20px',
-            top: '50px', // Separación desde la parte superior
+            top: '50px',
             borderRadius: '10px',
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.6)',
-            fontFamily: '"Cinzel", serif', // Fuente con estilo clásico y mágico
+            fontFamily: '"Cinzel", serif',
             border: '2px solid #B28D42',
         },
         header: {
@@ -109,7 +108,7 @@ export default function LanzarHechizo() {
             fontSize: '28px',
             marginBottom: '20px',
             letterSpacing: '2px',
-            color: '#B28D42', // Toques dorados
+            color: '#B28D42',
         },
         form: {
             display: 'flex',
@@ -194,7 +193,7 @@ export default function LanzarHechizo() {
             {isFireballLaunched && <FireballAnimation />}
             {isWaterStreamLaunched && <WaterStreamAnimation />}
             {isAirGustLaunched && <AirGustAnimation />}
-            {isRockExplosionLaunched && <RockExplosionAnimation />} {/* Mostrar la animación de la roca */}
+            {isRockExplosionLaunched && <RockExplosionAnimation />}
         </div>
     );
 }
