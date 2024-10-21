@@ -2,99 +2,136 @@ import React, { useState } from 'react';
 import sistemaMagicoService from '../service/sistemaMagicoService';
 
 export default function AuditarEventoMagico() {
-    const [eventoId, setEventoId] = useState(''); // Estado para almacenar el ID del evento
-    const [success, setSuccess] = useState(''); // Estado para el mensaje de éxito
-    const [error, setError] = useState(''); // Estado para el mensaje de error
-    const [loading, setLoading] = useState(false); // Estado para controlar el estado de carga
+    const [eventoId, setEventoId] = useState('');
+    const [success, setSuccess] = useState('');
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [element, setElement] = useState(''); // New state to track the element
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(''); // Limpiar errores previos
-        setSuccess(''); // Limpiar mensajes de éxito previos
-        setLoading(true); // Activar el estado de carga
+        setError('');
+        setSuccess('');
+        setLoading(true);
 
         try {
-            const response = await sistemaMagicoService.auditarEventoMagico(eventoId); // Llamada al servicio
-            setSuccess(response.data); // Mostrar el mensaje de éxito
+            const response = await sistemaMagicoService.auditarEventoMagico(eventoId);
+            setSuccess(response.data);
+            // Set the element based on the response or eventoId
+            if (eventoId.includes('agua')) {
+                setElement('agua');
+            } else if (eventoId.includes('fuego')) {
+                setElement('fuego');
+            } else if (eventoId.includes('roca')) {
+                setElement('roca');
+            } else if (eventoId.includes('aire')) {
+                setElement('aire');
+            }
         } catch (err) {
-            // Manejo de errores más detallado
             setError('Error auditando evento: ' + (err.response?.data || err.message));
         } finally {
-            setLoading(false); // Desactivar el estado de carga
+            setLoading(false);
+        }
+    };
+
+    const getGlowColor = () => {
+        switch (element) {
+            case 'agua':
+                return '0 0 20px 5px blue';
+            case 'fuego':
+                return '0 0 20px 5px red';
+            case 'roca':
+                return '0 0 20px 5px brown';
+            case 'aire':
+                return '0 0 20px 5px lightgray';
+            default:
+                return '0 0 20px 5px #B28D42';
         }
     };
 
     return (
-        <div style={styles.container}>
-            <h2 style={styles.title}>Auditar Evento Mágico</h2>
-            {error && <p style={styles.error}>{error}</p>}
-            {success && <p style={styles.success}>{success}</p>}
-            <form onSubmit={handleSubmit} style={styles.form}>
-                <input
-                    type="text"
-                    placeholder="ID del Evento"
-                    value={eventoId}
-                    onChange={(e) => setEventoId(e.target.value)}
-                    required
-                    style={styles.input}
-                    disabled={loading} // Deshabilitar el input mientras se procesa la solicitud
-                />
-                <button type="submit" style={styles.button} disabled={loading || !eventoId}>
-                    {loading ? 'Auditando...' : 'Auditar'}
-                </button>
-            </form>
+        <div style={styles.outerContainer}>
+            <div style={{ ...styles.container, boxShadow: getGlowColor() }}>
+                <h2 style={styles.header}>Auditar Evento Mágico</h2>
+                {error && <p style={styles.errorMessage}>{error}</p>}
+                {success && <p style={styles.successMessage}>{success}</p>}
+                <form onSubmit={handleSubmit} style={styles.form}>
+                    <input
+                        type="text"
+                        placeholder="ID del Evento"
+                        value={eventoId}
+                        onChange={(e) => setEventoId(e.target.value)}
+                        required
+                        style={styles.input}
+                        disabled={loading}
+                    />
+                    <button type="submit" style={styles.button} disabled={loading || !eventoId}>
+                        {loading ? 'Auditando...' : 'Auditar'}
+                    </button>
+                </form>
+            </div>
         </div>
     );
 }
 
 const styles = {
-    container: {
-        maxWidth: '400px',
-        margin: '0 auto',
-        padding: '20px',
-        borderRadius: '10px',
-        backgroundColor: '#f9f9f9',
-        boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-        textAlign: 'center',
+    outerContainer: {
+        display: 'flex',
+        justifyContent: 'center',
+        padding: '20px 0', // Add padding to position it vertically
     },
-    title: {
-        fontSize: '24px',
+    container: {
+        backgroundColor: '#1A1A1D', // Dark elegant background
+        color: '#F0E6D2', // Light color for text
+        padding: '20px',
+        width: '300px', // Width to align to the left
+        borderRadius: '10px',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.6)',
+        fontFamily: '"Cinzel", serif', // Classic and magical font style
+        border: '2px solid #B28D42',
+        position: 'relative',
+    },
+    header: {
+        textAlign: 'center',
+        fontSize: '28px',
         marginBottom: '20px',
-        color: '#2c3e50',
+        letterSpacing: '2px',
+        color: '#B28D42', // Golden touches
     },
     form: {
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
+        gap: '15px',
     },
     input: {
         padding: '10px',
-        marginBottom: '15px',
-        border: '1px solid #ccc',
-        borderRadius: '5px',
         fontSize: '16px',
-        width: '100%',
+        borderRadius: '5px',
+        border: '1px solid #B28D42',
+        backgroundColor: '#333333',
+        color: '#F0E6D2',
+        transition: 'all 0.3s',
     },
     button: {
-        padding: '10px',
-        backgroundColor: '#3498db',
-        color: 'white',
-        border: 'none',
+        padding: '12px',
+        fontSize: '18px',
         borderRadius: '5px',
-        fontSize: '16px',
+        backgroundColor: '#B28D42',
+        color: '#1A1A1D',
         cursor: 'pointer',
-        width: '100%',
+        border: 'none',
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.5)',
         transition: 'background-color 0.3s',
     },
     buttonHover: {
-        backgroundColor: '#2980b9',
+        backgroundColor: '#C59B5F',
     },
-    success: {
+    successMessage: {
         color: 'green',
-        marginBottom: '15px',
+        textAlign: 'center',
     },
-    error: {
+    errorMessage: {
         color: 'red',
-        marginBottom: '15px',
+        textAlign: 'center',
     },
 };
