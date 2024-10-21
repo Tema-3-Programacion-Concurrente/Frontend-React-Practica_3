@@ -50,29 +50,36 @@ export default function AuditarEventoMagico() {
     };
 
     return (
-        <div style={{ ...styles.container, boxShadow: getGlowColor() }}>
-            <h2 style={styles.header}>Auditar Evento Mágico</h2>
-            {error && <p style={styles.errorMessage}>{error}</p>}
-            {success && <p style={styles.successMessage}>{success}</p>}
-            <form onSubmit={handleSubmit} style={styles.form}>
-                <input
-                    type="text"
-                    placeholder="ID del Evento"
-                    value={eventoId}
-                    onChange={(e) => setEventoId(e.target.value)}
-                    required
-                    style={styles.input}
-                    disabled={loading}
-                />
-                <button type="submit" style={styles.button} disabled={loading || !eventoId}>
-                    {loading ? 'Auditando...' : 'Auditar'}
-                </button>
-            </form>
+        <div style={styles.outerContainer}>
+            <div style={{ ...styles.container, boxShadow: getGlowColor() }}>
+                <h2 style={styles.header}>Auditar Evento Mágico</h2>
+                {error && <p style={styles.errorMessage}>{error}</p>}
+                {success && <p style={styles.successMessage}>{success}</p>}
+                <form onSubmit={handleSubmit} style={styles.form}>
+                    <input
+                        type="text"
+                        placeholder="ID del Evento"
+                        value={eventoId}
+                        onChange={(e) => setEventoId(e.target.value)}
+                        required
+                        style={styles.input}
+                        disabled={loading}
+                    />
+                    <button type="submit" style={styles.button} disabled={loading || !eventoId}>
+                        {loading ? 'Auditando...' : 'Auditar'}
+                    </button>
+                </form>
+            </div>
         </div>
     );
 }
 
 const styles = {
+    outerContainer: {
+        display: 'flex',
+        justifyContent: 'center',
+        padding: '20px 0', // Add padding to position it vertically
+    },
     container: {
         backgroundColor: '#1A1A1D', // Dark elegant background
         color: '#F0E6D2', // Light color for text
