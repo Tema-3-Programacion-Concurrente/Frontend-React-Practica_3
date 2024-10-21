@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import sistemaMagicoService from '../service/sistemaMagicoService';
 import hechizoService from '../service/hechizoService';
-// import FireballAnimation from './FireballAnimation';
-// import WaterStreamAnimation from './WaterDropAnimation';
-// import AirGustAnimation from './AirGustAnimation'; // Importar la animación de la ráfaga de aire
-import RockDropAnimation from './RockDropAnimation'; // Importar la animación de la caída de la roca
+import FireballAnimation from './FireballAnimation';
+import WaterStreamAnimation from './WaterDropAnimation';
+import AirGustAnimation from './AirGustAnimation';
+import RockExplosionAnimation from './RockExplosionAnimation'; // Importar la animación de la roca
 
 export default function LanzarHechizo() {
     const [hechizos, setHechizos] = useState([]);
@@ -12,10 +12,10 @@ export default function LanzarHechizo() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [usuario, setUsuario] = useState(null);
-    // const [isFireballLaunched, setIsFireballLaunched] = useState(false);
-    // const [isWaterStreamLaunched, setIsWaterStreamLaunched] = useState(false);
-    // const [isAirGustLaunched, setIsAirGustLaunched] = useState(false); // Estado para la ráfaga de aire
-    const [isRockDropLaunched, setIsRockDropLaunched] = useState(false); // Estado para la caída de la roca
+    const [isFireballLaunched, setIsFireballLaunched] = useState(false);
+    const [isWaterStreamLaunched, setIsWaterStreamLaunched] = useState(false);
+    const [isAirGustLaunched, setIsAirGustLaunched] = useState(false);
+    const [isRockExplosionLaunched, setIsRockExplosionLaunched] = useState(false); // Estado para la roca
 
     useEffect(() => {
         try {
@@ -46,10 +46,10 @@ export default function LanzarHechizo() {
         e.preventDefault();
         setError('');
         setSuccess('');
-        // setIsFireballLaunched(false);
-        // setIsWaterStreamLaunched(false);
-        // setIsAirGustLaunched(false); // Reiniciar todas las animaciones
-        setIsRockDropLaunched(false); // Reiniciar la animación de la roca
+        setIsFireballLaunched(false);
+        setIsWaterStreamLaunched(false);
+        setIsAirGustLaunched(false);
+        setIsRockExplosionLaunched(false); // Reiniciar todas las animaciones
 
         if (!usuario) {
             setError('Usuario no autenticado.');
@@ -75,15 +75,14 @@ export default function LanzarHechizo() {
             setSuccess('Hechizo lanzado exitosamente.');
 
             // Verificar el tipo de hechizo seleccionado
-            // if (selectedHechizo.nombre.toLowerCase() === 'fuego') {
-            //     setIsFireballLaunched(true); // Lanzar la bola de fuego
-            // } else if (selectedHechizo.nombre.toLowerCase() === 'agua') {
-            //     setIsWaterStreamLaunched(true); // Lanzar el chorro de agua
-            // } else if (selectedHechizo.nombre.toLowerCase() === 'aire') {
-            //     setIsAirGustLaunched(true); // Lanzar la ráfaga de aire
-            // } else if (selectedHechizo.nombre.toLowerCase() === 'roca') {
-            if (selectedHechizo.nombre.toLowerCase() === 'roca') {
-                setIsRockDropLaunched(true); // Lanzar la caída de la roca
+            if (selectedHechizo.nombre.toLowerCase() === 'fuego') {
+                setIsFireballLaunched(true); // Lanzar la bola de fuego
+            } else if (selectedHechizo.nombre.toLowerCase() === 'agua') {
+                setIsWaterStreamLaunched(true); // Lanzar el chorro de agua
+            } else if (selectedHechizo.nombre.toLowerCase() === 'aire') {
+                setIsAirGustLaunched(true); // Lanzar la ráfaga de aire
+            } else if (selectedHechizo.nombre.toLowerCase() === 'roca') {
+                setIsRockExplosionLaunched(true); // Lanzar la explosión de roca
             }
         } catch (err) {
             setError('Error lanzando el hechizo: ' + (err.response?.data || err.message));
@@ -124,10 +123,10 @@ export default function LanzarHechizo() {
             </form>
 
             {/* Mostrar la animación según el tipo de hechizo */}
-            {/* {isFireballLaunched && <FireballAnimation />} */}
-            {/* {isWaterStreamLaunched && <WaterStreamAnimation />} */}
-            {/* {isAirGustLaunched && <AirGustAnimation />} */}
-            {isRockDropLaunched && <RockDropAnimation />}
+            {isFireballLaunched && <FireballAnimation />}
+            {isWaterStreamLaunched && <WaterStreamAnimation />}
+            {isAirGustLaunched && <AirGustAnimation />}
+            {isRockExplosionLaunched && <RockExplosionAnimation />} {/* Mostrar la animación de la roca */}
         </div>
     );
 }
