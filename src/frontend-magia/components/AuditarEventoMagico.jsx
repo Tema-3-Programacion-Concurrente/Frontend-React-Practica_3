@@ -42,6 +42,187 @@ export default function AuditarEventoMagico() {
                     {loading ? 'Auditando...' : 'Auditar'}
                 </button>
             </form>
+            <div style={styles.elementAnimation}>
+                <div style={{ ...styles.element, ...styles.fire }}></div>
+                <div style={{ ...styles.element, ...styles.water }}></div>
+                <div style={{ ...styles.element, ...styles.air }}></div>
+                <div style={{ ...styles.element, ...styles.earth }}></div>
+            </div>
+        </div>
+    );
+}
+
+const styles = {
+    container: {
+        backgroundColor: '#1A1A1D', // Dark elegant background
+        color: '#F0E6D2', // Light color for text
+        padding: '20px',
+        width: '300px', // Width to align to the left
+        borderRadius: '10px',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.6)',
+        fontFamily: '"Cinzel", serif', // Classic and magical font style
+        border: '2px solid #B28D42',
+        animation: 'glow 2s infinite', // Add animation
+        position: 'relative',
+    },
+    header: {
+        textAlign: 'center',
+        fontSize: '28px',
+        marginBottom: '20px',
+        letterSpacing: '2px',
+        color: '#B28D42', // Golden touches
+    },
+    form: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '15px',
+    },
+    input: {
+        padding: '10px',
+        fontSize: '16px',
+        borderRadius: '5px',
+        border: '1px solid #B28D42',
+        backgroundColor: '#333333',
+        color: '#F0E6D2',
+        transition: 'all 0.3s',
+    },
+    button: {
+        padding: '12px',
+        fontSize: '18px',
+        borderRadius: '5px',
+        backgroundColor: '#B28D42',
+        color: '#1A1A1D',
+        cursor: 'pointer',
+        border: 'none',
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.5)',
+        transition: 'background-color 0.3s',
+    },
+    buttonHover: {
+        backgroundColor: '#C59B5F',
+    },
+    successMessage: {
+        color: 'green',
+        textAlign: 'center',
+    },
+    errorMessage: {
+        color: 'red',
+        textAlign: 'center',
+    },
+    '@keyframes glow': {
+        '0%': {
+            boxShadow: '0 0 5px #B28D42',
+        },
+        '50%': {
+            boxShadow: '0 0 20px #B28D42',
+        },
+        '100%': {
+            boxShadow: '0 0 5px #B28D42',
+        },
+    },
+    elementAnimation: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        width: '100%',
+        height: '100%',
+        transform: 'translate(-50%, -50%)',
+        pointerEvents: 'none',
+    },
+    element: {
+        position: 'absolute',
+        width: '20px',
+        height: '20px',
+        borderRadius: '50%',
+        animation: 'float 4s infinite',
+    },
+    fire: {
+        backgroundColor: 'red',
+        top: '0',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        animationDelay: '0s',
+    },
+    water: {
+        backgroundColor: 'blue',
+        bottom: '0',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        animationDelay: '1s',
+    },
+    air: {
+        backgroundColor: 'lightblue',
+        top: '50%',
+        left: '0',
+        transform: 'translateY(-50%)',
+        animationDelay: '2s',
+    },
+    earth: {
+        backgroundColor: 'green',
+        top: '50%',
+        right: '0',
+        transform: 'translateY(-50%)',
+        animationDelay: '3s',
+    },
+    '@keyframes float': {
+        '0%': {
+            transform: 'translateY(0)',
+        },
+        '50%': {
+            transform: 'translateY(-20px)',
+        },
+        '100%': {
+            transform: 'translateY(0)',
+        },
+    },
+};
+
+
+/*
+VERSION SEGURA Y GENERICA
+import React, { useState } from 'react';
+import sistemaMagicoService from '../service/sistemaMagicoService';
+
+export default function AuditarEventoMagico() {
+    const [eventoId, setEventoId] = useState('');
+    const [success, setSuccess] = useState('');
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+        setSuccess('');
+        setLoading(true);
+
+        try {
+            const response = await sistemaMagicoService.auditarEventoMagico(eventoId);
+            setSuccess(response.data);
+        } catch (err) {
+            setError('Error auditando evento: ' + (err.response?.data || err.message));
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div style={styles.container}>
+            <h2 style={styles.header}>Auditar Evento Mágico</h2>
+            {error && <p style={styles.errorMessage}>{error}</p>}
+            {success && <p style={styles.successMessage}>{success}</p>}
+            <form onSubmit={handleSubmit} style={styles.form}>
+                <input
+                    type="text"
+                    placeholder="ID del Evento"
+                    value={eventoId}
+                    onChange={(e) => setEventoId(e.target.value)}
+                    required
+                    style={styles.input}
+                    disabled={loading}
+                />
+                <button type="submit" style={styles.button} disabled={loading || !eventoId}>
+                    {loading ? 'Auditando...' : 'Auditar'}
+                </button>
+            </form>
         </div>
     );
 }
@@ -101,8 +282,15 @@ const styles = {
         textAlign: 'center',
     },
 };
+*/
+
+
+
+
 
 /*
+
+VERSION 3 LA MAS POCHA:
 import React, { useState } from 'react';
 import sistemaMagicoService from '../service/sistemaMagicoService';
 
