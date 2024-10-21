@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import sistemaMagicoService from '../service/sistemaMagicoService';
 import hechizoService from '../service/hechizoService';
+import FireballAnimation from './FireballAnimation';
+import WaterStreamAnimation from './WaterDropAnimation';
+import AirGustAnimation from './AirGustAnimation'; // Importar la animación de la ráfaga de aire
 
 export default function LanzarHechizo() {
-    const [hechizos, setHechizos] = useState([]); // Lista de hechizos completos
-    const [selectedHechizo, setSelectedHechizo] = useState(null); // Hechizo seleccionado
+    const [hechizos, setHechizos] = useState([]);
+    const [selectedHechizo, setSelectedHechizo] = useState(null);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [usuario, setUsuario] = useState(null);
+    const [isFireballLaunched, setIsFireballLaunched] = useState(false);
+    const [isWaterStreamLaunched, setIsWaterStreamLaunched] = useState(false);
+    const [isAirGustLaunched, setIsAirGustLaunched] = useState(false); // Estado para la ráfaga de aire
 
     useEffect(() => {
         try {
-            // Obtener usuario del localStorage
             const storedUser = localStorage.getItem('usuario');
             if (storedUser) {
                 const parsedUser = JSON.parse(storedUser);
@@ -23,7 +28,6 @@ export default function LanzarHechizo() {
             setError('Error al obtener el usuario del almacenamiento local.');
         }
 
-        // Obtener la lista de hechizos disponibles
         const fetchHechizos = async () => {
             try {
                 const response = await hechizoService.getAllHechizos();
@@ -40,37 +44,41 @@ export default function LanzarHechizo() {
         e.preventDefault();
         setError('');
         setSuccess('');
+        setIsFireballLaunched(false);
+        setIsWaterStreamLaunched(false);
+        setIsAirGustLaunched(false); // Reiniciar todas las animaciones
 
         if (!usuario) {
             setError('Usuario no autenticado.');
             return;
         }
-
-        // Verificar que se seleccionó un hechizo
         if (!selectedHechizo) {
             setError('Debes seleccionar un hechizo válido.');
             return;
         }
 
         try {
-            // Crear el objeto con los datos del usuario y del hechizo seleccionado
+            const updatedPoder = usuario.poder + 1;
             const usuarioData = {
-                id: usuario.id,
-                nombre: usuario.nombre,
-                apellido1: usuario.apellido1,
-                apellido2: usuario.apellido2,
-                correo: usuario.correo,
-                telefono: usuario.telefono,
-                direccion: usuario.direccion,
-                poder: usuario.poder
+                ...usuario,
+                poder: updatedPoder,
             };
-
-            console.log("Usuario:", usuarioData);
-            console.log("Hechizo enviado:", selectedHechizo);
-
-            // Enviar el usuario completo y el hechizo completo
             const response = await sistemaMagicoService.lanzarHechizo(usuarioData, selectedHechizo);
+
+            const updatedUser = { ...usuario, poder: updatedPoder };
+            localStorage.setItem('usuario', JSON.stringify(updatedUser));
+            setUsuario(updatedUser);
+
             setSuccess('Hechizo lanzado exitosamente.');
+
+            // Verificar el tipo de hechizo seleccionado
+            if (selectedHechizo.nombre.toLowerCase() === 'fuego') {
+                setIsFireballLaunched(true); // Lanzar la bola de fuego
+            } else if (selectedHechizo.nombre.toLowerCase() === 'agua') {
+                setIsWaterStreamLaunched(true); // Lanzar el chorro de agua
+            } else if (selectedHechizo.nombre.toLowerCase() === 'aire') {
+                setIsAirGustLaunched(true); // Lanzar la ráfaga de aire
+            }
         } catch (err) {
             setError('Error lanzando el hechizo: ' + (err.response?.data || err.message));
         }
@@ -86,13 +94,15 @@ export default function LanzarHechizo() {
                 {usuario && (
                     <p>
                         Usuario: {usuario.nombre} {usuario.apellido1} {usuario.apellido2}
+                        <br />
+                        Poder actual: {usuario.poder}
                     </p>
                 )}
 
                 <select
                     onChange={(e) => {
                         const hechizo = hechizos.find(h => h.id === parseInt(e.target.value));
-                        setSelectedHechizo(hechizo); // Guardar el hechizo completo
+                        setSelectedHechizo(hechizo);
                     }}
                     required
                 >
@@ -106,6 +116,11 @@ export default function LanzarHechizo() {
 
                 <button type="submit">Lanzar Hechizo</button>
             </form>
+
+            {/* Mostrar la animación según el tipo de hechizo */}
+            {isFireballLaunched && <FireballAnimation />}
+            {isWaterStreamLaunched && <WaterStreamAnimation />}
+            {isAirGustLaunched && <AirGustAnimation />}
         </div>
     );
 }
