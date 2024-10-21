@@ -89,15 +89,80 @@ export default function LanzarHechizo() {
         }
     };
 
-    return (
-        <div>
-            <h2>Lanzar Hechizo</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            {success && <p style={{ color: 'green' }}>{success}</p>}
+    // Estilos CSS en línea para la estética del Ministerio de Magia
+    const styles = {
+        container: {
+            backgroundColor: '#1A1A1D', // Fondo oscuro elegante
+            color: '#F0E6D2', // Color claro para texto
+            padding: '20px',
+            width: '300px', // Anchura para alinearlo a la izquierda
+            position: 'fixed', // Posición fija en la izquierda
+            left: '20px',
+            top: '50px', // Separación desde la parte superior
+            borderRadius: '10px',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.6)',
+            fontFamily: '"Cinzel", serif', // Fuente con estilo clásico y mágico
+            border: '2px solid #B28D42',
+        },
+        header: {
+            textAlign: 'center',
+            fontSize: '28px',
+            marginBottom: '20px',
+            letterSpacing: '2px',
+            color: '#B28D42', // Toques dorados
+        },
+        form: {
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '15px',
+        },
+        select: {
+            padding: '10px',
+            fontSize: '16px',
+            borderRadius: '5px',
+            border: '1px solid #B28D42',
+            backgroundColor: '#333333',
+            color: '#F0E6D2',
+            transition: 'all 0.3s',
+        },
+        button: {
+            padding: '12px',
+            fontSize: '18px',
+            borderRadius: '5px',
+            backgroundColor: '#B28D42',
+            color: '#1A1A1D',
+            cursor: 'pointer',
+            border: 'none',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.5)',
+            transition: 'background-color 0.3s',
+        },
+        buttonHover: {
+            backgroundColor: '#C59B5F',
+        },
+        userInfo: {
+            fontSize: '16px',
+            lineHeight: '1.6',
+            textAlign: 'center',
+        },
+        successMessage: {
+            color: 'green',
+            textAlign: 'center',
+        },
+        errorMessage: {
+            color: 'red',
+            textAlign: 'center',
+        },
+    };
 
-            <form onSubmit={handleSubmit}>
+    return (
+        <div style={styles.container}>
+            <h2 style={styles.header}>Lanzar Hechizo</h2>
+            {error && <p style={styles.errorMessage}>{error}</p>}
+            {success && <p style={styles.successMessage}>{success}</p>}
+
+            <form onSubmit={handleSubmit} style={styles.form}>
                 {usuario && (
-                    <p>
+                    <p style={styles.userInfo}>
                         Usuario: {usuario.nombre} {usuario.apellido1} {usuario.apellido2}
                         <br />
                         Poder actual: {usuario.poder}
@@ -109,6 +174,7 @@ export default function LanzarHechizo() {
                         const hechizo = hechizos.find(h => h.id === parseInt(e.target.value));
                         setSelectedHechizo(hechizo);
                     }}
+                    style={styles.select}
                     required
                 >
                     <option value="">Seleccione un hechizo</option>
@@ -119,7 +185,9 @@ export default function LanzarHechizo() {
                     ))}
                 </select>
 
-                <button type="submit">Lanzar Hechizo</button>
+                <button type="submit" style={styles.button}>
+                    Lanzar Hechizo
+                </button>
             </form>
 
             {/* Mostrar la animación según el tipo de hechizo */}

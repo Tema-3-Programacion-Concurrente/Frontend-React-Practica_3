@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
 
-// Constantes para la animación de la explosión de la roca y la onda de polvo
+// Constantes para la animación de la explosión de la roca y polvo
 const FRAGMENTS_COUNT = 20; // Número de fragmentos
-const DUST_PARTICLES_COUNT = 30; // Número de partículas de polvo
+const DUST_PARTICLES_COUNT = 50; // Número de partículas de polvo
 const MIN_EXPLOSION_SPEED = 10; // Velocidad mínima de dispersión
 const MAX_EXPLOSION_SPEED = 20; // Velocidad máxima de dispersión
-const MIN_DUST_SPEED = 5; // Velocidad mínima de dispersión del polvo
-const MAX_DUST_SPEED = 15; // Velocidad máxima de dispersión del polvo
 const GRAVITY = 0.2; // Gravedad simulada
 const MIN_SIZE = 20; // Tamaño mínimo de los fragmentos
 const MAX_SIZE = 50; // Tamaño máximo de los fragmentos
+const DUST_SIZE = 5; // Tamaño de las partículas de polvo
 const FLOOR_LIMIT = window.innerHeight * 0.9; // Límite inferior (90% de la pantalla)
 
 // Función para generar fragmentos aleatorios con formas y tamaños distintos
@@ -35,19 +34,22 @@ const generateFragments = () => {
     return fragments;
 };
 
-// Función para generar las partículas de polvo
+// Función para generar partículas de polvo que se expanden en todas direcciones
 const generateDustParticles = () => {
     const particles = [];
     for (let i = 0; i < DUST_PARTICLES_COUNT; i++) {
-        const angle = Math.random() * 360; // Ángulo aleatorio en grados
-        const speed = Math.random() * (MAX_DUST_SPEED - MIN_DUST_SPEED) + MIN_DUST_SPEED; // Velocidad aleatoria dentro del rango
+        const angle = Math.random() * 360; // Ángulo aleatorio
+        const speed = Math.random() * (MAX_EXPLOSION_SPEED - MIN_EXPLOSION_SPEED) + MIN_EXPLOSION_SPEED;
+
         particles.push({
             id: i,
             x: 0,
             y: 0,
-            vx: Math.cos((angle * Math.PI) / 180) * speed, // Velocidad en X según el ángulo
-            vy: Math.sin((angle * Math.PI) / 180) * speed, // Velocidad en Y según el ángulo
-            opacity: 1, // Inicialmente opaco
+            size: DUST_SIZE,
+            angle,
+            vx: Math.cos((angle * Math.PI) / 180) * speed,
+            vy: Math.sin((angle * Math.PI) / 180) * speed,
+            color: "rgba(139, 69, 19, 0.5)", // Color marrón translúcido para simular polvo
         });
     }
     return particles;
@@ -89,6 +91,7 @@ const Fragment = ({ x, y, size, shape, color, onDisappear }) => {
         top: `calc(50% + ${y}px)`,
         transform: `rotate(${Math.random() * 360}deg)`, // Rotación aleatoria
         transition: "all 0.1s linear",
+        zIndex: 9999, // Aseguramos que los fragmentos estén por encima del contenido
     };
 
     // Desaparecer fragmento
@@ -101,18 +104,19 @@ const Fragment = ({ x, y, size, shape, color, onDisappear }) => {
     return <div style={fragmentStyle}></div>;
 };
 
-// Componente individual de partícula de polvo
-const DustParticle = ({ x, y, opacity }) => {
+// Componente individual de partículas de polvo
+const DustParticle = ({ x, y, size, color }) => {
     const particleStyle = {
         position: "absolute",
-        width: "10px",
-        height: "10px",
-        background: "rgba(169, 169, 169, 0.5)", // Color grisáceo semi-transparente
-        borderRadius: "50%", // Forma circular
-        left: `calc(50% + ${x}px)`, // Ajustar la posición con respecto al centro
+        width: `${size}px`,
+        height: `${size}px`,
+        background: color,
+        borderRadius: "50%", // Hacer que las partículas de polvo sean circulares
+        left: `calc(50% + ${x}px)`,
         top: `calc(50% + ${y}px)`,
-        opacity: opacity,
+        opacity: 0.7, // Hacer las partículas algo translúcidas
         transition: "all 0.1s linear",
+        zIndex: 9998, // Las partículas están debajo de los fragmentos
     };
 
     return <div style={particleStyle}></div>;
@@ -121,13 +125,12 @@ const DustParticle = ({ x, y, opacity }) => {
 // Componente principal
 export default function RockExplosionAnimation() {
     const [fragments, setFragments] = useState(generateFragments());
-    const [dustParticles, setDustParticles] = useState([]); // Estado para las partículas de polvo
+    const [dustParticles, setDustParticles] = useState(generateDustParticles());
     const [isExploded, setIsExploded] = useState(false); // Estado para controlar la explosión
     const [timerActive, setTimerActive] = useState(true); // Temporizador para la explosión
 
     // Función para iniciar la explosión
     const triggerExplosion = () => {
-        // Fragmentos de roca
         setFragments((prevFragments) =>
             prevFragments.map((fragment) => {
                 const angleInRadians = (fragment.angle * Math.PI) / 180; // Convertir ángulo a radianes
@@ -139,9 +142,6 @@ export default function RockExplosionAnimation() {
                 };
             })
         );
-
-        // Generar partículas de polvo
-        setDustParticles(generateDustParticles());
         setIsExploded(true); // Marcar como explotado
     };
 
@@ -174,17 +174,12 @@ export default function RockExplosionAnimation() {
                         };
                     })
                 );
-
-                // Mover y desvanecer las partículas de polvo
                 setDustParticles((prevParticles) =>
-                    prevParticles.map((particle) => {
-                        return {
-                            ...particle,
-                            x: particle.x + particle.vx,
-                            y: particle.y + particle.vy,
-                            opacity: particle.opacity - 0.02, // Disminuir opacidad gradualmente
-                        };
-                    }).filter((particle) => particle.opacity > 0) // Eliminar partículas cuando se desvanezcan
+                    prevParticles.map((particle) => ({
+                        ...particle,
+                        x: particle.x + particle.vx, // Actualizar posición X de las partículas
+                        y: particle.y + particle.vy, // Actualizar posición Y de las partículas
+                    }))
                 );
             }, 50); // Animación se actualiza cada 50ms
 
@@ -228,17 +223,16 @@ export default function RockExplosionAnimation() {
                         onDisappear={() => handleFragmentDisappear(fragment.id)}
                     />
                 ))}
+                {dustParticles.map((particle) => (
+                    <DustParticle
+                        key={particle.id}
+                        x={particle.x}
+                        y={particle.y}
+                        size={particle.size}
+                        color={particle.color}
+                    />
+                ))}
             </div>
-
-            {/* Mostrar partículas de polvo */}
-            {dustParticles.map((particle) => (
-                <DustParticle
-                    key={particle.id}
-                    x={particle.x}
-                    y={particle.y}
-                    opacity={particle.opacity}
-                />
-            ))}
         </div>
     );
 }
