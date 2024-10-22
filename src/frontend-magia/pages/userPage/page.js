@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import LanzarHechizo from '../../components/LanzarHechizo'; // Importa el componente Lanzar Hechizo
+import LanzarHechizo from '../../components/LanzarHechizo';
 
 export default function UserPage() {
     const navigate = useNavigate();
@@ -9,6 +9,7 @@ export default function UserPage() {
     const [isVisible, setIsVisible] = useState(true);  // Controla si el personaje es visible
     const [isHit, setIsHit] = useState(false);  // Controla si el personaje está siendo golpeado
     const [isDying, setIsDying] = useState(false); // Controla el estado de "muriendo"
+    const [audio, setAudio] = useState(null);  // Control del audio
 
     useEffect(() => {
         const storedUser = localStorage.getItem('usuario');
@@ -18,7 +19,7 @@ export default function UserPage() {
 
         const recalculatePosition = () => {
             const windowHeight = window.innerHeight;
-            const characterTop = windowHeight * 0.80;
+            const characterTop = windowHeight * 0.83;
             setPersonajeTop(`${characterTop}px`);
         };
 
@@ -29,6 +30,63 @@ export default function UserPage() {
             window.removeEventListener('resize', recalculatePosition);
         };
     }, [navigate]);
+
+    // Función para manejar la reproducción de audio
+    useEffect(() => {
+        const newAudio = new Audio('/music.mp3');
+        newAudio.volume = 0;  // Inicia con volumen cero
+        newAudio.loop = true;  // Para que el audio se repita
+        setAudio(newAudio);
+
+        return () => {
+            if (newAudio) {
+                newAudio.pause();  // Detener la música cuando se salga de la página
+            }
+        };
+    }, []);
+
+    // Función para incrementar gradualmente el volumen
+    const incrementarVolumen = () => {
+        if (audio) {
+            audio.play().then(() => {
+                let currentVolume = 0;
+                const interval = setInterval(() => {
+                    if (currentVolume < 0.2) {  // Limitar el volumen máximo a 0.5
+                        currentVolume += 0.001;
+                        audio.volume = currentVolume;
+                    } else {
+                        clearInterval(interval);  // Detenemos el intervalo cuando llega a 0.5
+                    }
+                }, 100);   // Aumentar el volumen gradualmente cada 100ms
+            }).catch(error => {
+                console.error("Error al reproducir la música:", error);
+            });
+        }
+    };
+
+    // Iniciar música cuando el usuario hace clic en la pantalla
+    const handleUserClick = () => {
+        if (audio) {
+            incrementarVolumen();  // Llamar a la función para incrementar el volumen
+        }
+        window.removeEventListener('click', handleUserClick); // Remover el evento una vez que el usuario haga clic
+    };
+
+    useEffect(() => {
+        // Agregar evento de clic cuando se cargue la página
+        window.addEventListener('click', handleUserClick);
+        return () => {
+            window.removeEventListener('click', handleUserClick);
+        };
+    }, [audio]);
+
+    // Función para detener la música
+    const detenerMusica = () => {
+        if (audio) {
+            audio.pause();
+            audio.currentTime = 0;  // Reiniciar la música
+        }
+    };
 
     const recibirHechizo = (danio) => {
         setTimeout(() => {
@@ -106,6 +164,11 @@ export default function UserPage() {
                     <p style={styles.sectionDescription}>Transforma y transfigura elementos para crear nuevas sustancias mágicas.</p>
                 </div>
             </div>
+
+            {/* Botón para detener la música */}
+            <button style={styles.stopButton} onClick={detenerMusica}>
+                Parar música
+            </button>
         </div>
     );
 }
@@ -193,5 +256,27 @@ const styles = {
     sectionDescription: {
         fontSize: '16px',
         color: '#F0E6D2',
+    },
+    stopButton: {
+        position: 'fixed',
+        bottom: '20px',
+        left: '20px',
+        padding: '12px 24px',
+        backgroundColor: '#B28D42', // Fondo dorado
+        color: '#1A1A1D', // Texto oscuro
+        fontSize: '16px', // Tamaño de fuente más grande
+        fontWeight: 'bold', // Fuente en negrita
+        border: '2px solid #8C6E42', // Borde más definido
+        borderRadius: '8px', // Esquinas más redondeadas
+        cursor: 'pointer',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)', // Sombra para dar efecto de elevación
+        transition: 'all 0.3s ease', // Transición suave para hover
+        zIndex: 3,
+    },
+    stopButtonHover: {
+        backgroundColor: '#A37D4F', // Color más oscuro en hover
+        color: '#F0E6D2', // Color de texto más claro en hover
+        transform: 'translateY(-2px)', // Efecto de elevación al hacer hover
+        boxShadow: '0 6px 14px rgba(0, 0, 0, 0.3)', // Sombra más profunda en hover
     },
 };

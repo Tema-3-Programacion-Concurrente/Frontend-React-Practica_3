@@ -1,42 +1,57 @@
 import React, { useState, useEffect } from "react";
 
 // Parámetros del rayo eléctrico
-const GIF_DURATION = 2000; // Duración del GIF en milisegundos (ajusta este valor según la duración real del GIF)
-const TARGET_POSITION = { x: window.innerWidth / 2, y: window.innerHeight / 2 }; // Centro de la pantalla
+const GIF_DURATION = 1800; // Duración del rayo
+const EXPLOSION_DELAY = GIF_DURATION - 400; // La explosión empieza antes de que el rayo desaparezca
+const DEFAULT_POSITION = { x: window.innerWidth / 2, y: window.innerHeight * 0.8 }; // Posición por defecto
 
-export default function ElectroHechizo({ onImpact }) { // Añadimos onImpact como prop para disparar la animación de golpeo
+export default function ElectroHechizo({ onImpact, personajePosicion = DEFAULT_POSITION }) {
     const [isElectroVisible, setIsElectroVisible] = useState(true);
     const [shakeScreen, setShakeScreen] = useState(false);  // Estado para agitar la pantalla
+    const [showExplosion, setShowExplosion] = useState(false); // Estado para mostrar la explosión
 
     useEffect(() => {
-        // Mostrar el GIF por la duración total del GIF
+        // Mostrar el GIF del rayo
         const timer = setTimeout(() => {
-            setIsElectroVisible(false);  // Ocultar el GIF después de la duración
+            setIsElectroVisible(false);  // Ocultar el GIF del rayo después de la duración
             if (onImpact) {
-                onImpact();  // Llamar a la función de impacto cuando termina el GIF
+                onImpact();  // Llamar a la función de impacto cuando termina el rayo
             }
         }, GIF_DURATION);
 
-        // Activar el efecto de sacudida al inicio del impacto
+        // Iniciar la explosión antes de que el rayo desaparezca
+        const explosionTimer = setTimeout(() => {
+            setShowExplosion(true);  // Mostrar la explosión
+            setTimeout(() => {
+                setShowExplosion(false);  // Ocultar la explosión después de 1 segundo
+            }, 1000); // Duración de la explosión
+        }, EXPLOSION_DELAY);
+
+        // Sacudir la pantalla durante el impacto
         setShakeScreen(true);
         const shakeTimer = setTimeout(() => {
             setShakeScreen(false);  // Detener la sacudida después de 500ms
-        }, 500);  // La sacudida durará 500ms (puedes ajustar este valor)
+        }, 400);
 
         return () => {
             clearTimeout(timer);
             clearTimeout(shakeTimer);
+            clearTimeout(explosionTimer);
         };
     }, [onImpact]);
 
     const gifUrl = '/electro.gif';  // Ruta al GIF en la carpeta public
 
+    // Verificamos si la posición del personaje está disponible y usamos la predeterminada si no.
+    const { x, y } = personajePosicion || DEFAULT_POSITION;
+
+    // Posición del rayo basada en la ubicación del personaje
     const lightningStyle = {
         position: "fixed",
-        left: `${TARGET_POSITION.x - 260}px`, // Ajustamos la posición y tamaño para que el rayo quede fijo
-        top: `${TARGET_POSITION.y - 70}px`,
-        width: "450px",  // Tamaño más grande del GIF
-        height: "450px",
+        left: `${x - 150}px`, // Centramos el rayo según el personaje
+        top: `${y - 100}px`, // Un poco encima del personaje
+        width: "300px",  // Ajuste del tamaño del rayo
+        height: "300px",
         zIndex: 9999,
         opacity: isElectroVisible ? 1 : 0,
         transition: "opacity 0.8s ease-out", // Desvanecimiento suave del GIF
@@ -46,16 +61,49 @@ export default function ElectroHechizo({ onImpact }) { // Añadimos onImpact com
     const shakeStyle = `
         @keyframes shake {
             0% { transform: translate(0px, 0px); }
-            25% { transform: translate(10px, -10px); }
-            50% { transform: translate(-10px, 10px); }
-            75% { transform: translate(10px, 10px); }
+            15% { transform: translate(2px, -2px); }
+            30% { transform: translate(-2px, 2px); }
+            45% { transform: translate(2px, 2px); }
+            60% { transform: translate(2px, -2px); }
+            75% { transform: translate(-2px, 2px); }
+            90% { transform: translate(0px, 0px); }
             100% { transform: translate(0px, 0px); }
         }
 
         .shake-screen {
             animation: shake 0.5s ease-in-out;  /* Duración de 0.5 segundos para la sacudida de la pantalla */
         }
+
+        @keyframes explosion {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            70% {
+                transform: scale(1.5);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
     `;
+
+    // Posición de la explosión justo debajo del rayo
+    const explosionStyle = {
+        position: "fixed",
+        left: `${x - 60}px`,  // Ajustar la posición para centrar el óvalo
+        top: `${y + 125}px`,  // Mantener justo debajo del rayo
+        width: "100px",  // Ancho ajustado para un óvalo
+        height: "5px",  // Altura reducida para un óvalo más plano
+        background: "radial-gradient(ellipse, rgba(255, 255, 255, 0) 30%, rgba(0, 123, 255, 0.7) 50%, rgba(0, 123, 255, 0.8) 70%)",  // Gradiente ajustado para un óvalo
+        borderRadius: "50% / 20%",  // Más achatado para reducir la altura del óvalo
+        opacity: showExplosion ? 1 : 0,
+        transform: "scale(0)",
+        animation: showExplosion ? "explosion 1s forwards, blink 1s infinite" : "none",  // Añadido el parpadeo junto con la explosión
+        zIndex: 9999,
+    };
 
     // Sacudimos la pantalla, no el rayo
     useEffect(() => {
@@ -68,16 +116,17 @@ export default function ElectroHechizo({ onImpact }) { // Añadimos onImpact com
 
     return (
         <>
-            {/* Insertar el CSS de la sacudida en el <head> */}
             <style>{shakeStyle}</style>
 
             <div>
-                {/* El rayo permanece fijo en su lugar */}
                 <div style={lightningStyle}>
                     {isElectroVisible && (
                         <img src={gifUrl} alt="Electro Hechizo" style={{ width: '100%', height: '100%' }} />
                     )}
                 </div>
+
+                {/* Contenedor de la explosión */}
+                <div style={explosionStyle}></div>
             </div>
         </>
     );

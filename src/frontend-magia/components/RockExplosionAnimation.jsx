@@ -3,11 +3,11 @@ import React, { useState, useEffect } from "react";
 // Constantes para la animación de la explosión de la roca y polvo
 const FRAGMENTS_COUNT = 20; // Número de fragmentos
 const DUST_PARTICLES_COUNT = 50; // Número de partículas de polvo
-const MIN_EXPLOSION_SPEED = 10; // Velocidad mínima de dispersión
-const MAX_EXPLOSION_SPEED = 20; // Velocidad máxima de dispersión
+const MIN_EXPLOSION_SPEED = 17; // Velocidad mínima de dispersión
+const MAX_EXPLOSION_SPEED = 23; // Velocidad máxima de dispersión
 const GRAVITY = 0.2; // Gravedad simulada
 const MIN_SIZE = 20; // Tamaño mínimo de los fragmentos
-const MAX_SIZE = 50; // Tamaño máximo de los fragmentos
+const MAX_SIZE = 30; // Tamaño máximo de los fragmentos
 const DUST_SIZE = 5; // Tamaño de las partículas de polvo
 const FLOOR_LIMIT = window.innerHeight * 0.9; // Límite inferior (90% de la pantalla)
 
