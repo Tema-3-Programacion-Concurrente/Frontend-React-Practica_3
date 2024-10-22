@@ -77,9 +77,9 @@ export default function UserPage() {
                     top: personajeTop,
                     backgroundImage: 'url("/wizardImage.png")',
                     opacity: isDying ? 1 : (isHit ? 0.5 : 1), // Parpadeo al ser golpeado o muriendo
-                    backgroundColor: isDying ? 'rgba(255, 0, 0, 0.7)' : 'transparent',
-                    borderRadius: '50%', // Convierte el personaje en un círculo al parpadear
-                    boxShadow: isHit ? '0 0 20px 10px rgba(255, 0, 0, 0.5)' : 'none', // Efecto circular
+                    backgroundColor: isHit ? 'rgba(255, 0, 0, 0.5)' : 'transparent', // Parpadeo rojo al ser golpeado
+                    borderRadius: '50%', // Convierte el parpadeo en un círculo al parpadear
+                    boxShadow: isHit ? '0 0 20px 10px rgba(255, 0, 0, 0.5)' : 'none', // Efecto circular solo cuando es golpeado
                     transition: isDying ? 'opacity 1.5s ease-out' : 'background-color 0.2s ease, opacity 0.2s ease', // Desvanecimiento suave cuando muere
                 }}></div>
             )}
