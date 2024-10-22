@@ -54,8 +54,11 @@ export default function AirGustAnimation() {
                 TARGET_POSITION.y   // Usa la posición correcta (80% de la pantalla)
             );
 
+            // Calcular la distancia entre la ráfaga y el personaje
+            const distanceToTarget = Math.hypot(TARGET_POSITION.x - x, TARGET_POSITION.y - y);
+
             // Detener la animación y activar el impacto si llega al personaje
-            if (x >= TARGET_POSITION.x - 50 && y >= TARGET_POSITION.y - 50) {
+            if (distanceToTarget < 30) {  // Reducimos el umbral para mayor precisión
                 clearInterval(animationInterval);
                 setIsImpacting(true); // Activar el impacto
                 setIsVisible(false); // Ocultar la ráfaga de aire

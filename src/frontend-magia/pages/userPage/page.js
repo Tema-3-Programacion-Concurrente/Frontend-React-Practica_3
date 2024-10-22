@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import LanzarHechizo from '../../components/LanzarHechizo'; // Importa el componente Lanzar Hechizo
 
 export default function UserPage() {
     const navigate = useNavigate();
+    const [personajeTop, setPersonajeTop] = useState('80%');  // Inicia con el 80% de la altura de la ventana
 
     useEffect(() => {
         // Verificar si el usuario está autenticado
@@ -12,6 +13,23 @@ export default function UserPage() {
         if (!storedUser) {
             navigate('/login'); // Redirigir al login si no está autenticado
         }
+
+        // Función para calcular la posición del personaje sobre el suelo
+        const recalculatePosition = () => {
+            const windowHeight = window.innerHeight;
+            // Calculamos la posición en función de la altura del viewport para mantener al personaje justo sobre el suelo
+            const characterTop = windowHeight * 0.80;  // El personaje estará al 80% de la altura de la pantalla
+            setPersonajeTop(`${characterTop}px`);
+        };
+
+        // Recalcular la posición del personaje al cargar la página y cuando se redimensiona la ventana
+        recalculatePosition();
+        window.addEventListener('resize', recalculatePosition);
+
+        // Limpiar el evento al desmontar el componente
+        return () => {
+            window.removeEventListener('resize', recalculatePosition);
+        };
     }, [navigate]);
 
     return (
@@ -19,15 +37,15 @@ export default function UserPage() {
             {/* Fondo del bosque en 8 bits */}
             <div style={{
                 ...styles.bosque,
-                backgroundImage: 'url("https://64.media.tumblr.com/60721f23d65f6f5cb82c07fefde68713/tumblr_n1dbbe4Ksd1rs0nhyo1_500.gif")'  // Reemplaza con la URL de tu imagen en Google
+                backgroundImage: 'url("https://64.media.tumblr.com/60721f23d65f6f5cb82c07fefde68713/tumblr_n1dbbe4Ksd1rs0nhyo1_500.gif")'  // Fondo del bosque
             }}></div>
 
             {/* Personaje en el centro */}
             <div style={{
                 ...styles.personaje,
-                backgroundImage: 'url("/wizardImage.png")',  // Utiliza la imagen importada
+                top: personajeTop,  // Usamos el valor dinámico calculado para la posición superior
+                backgroundImage: 'url("/wizardImage.png")',  // Imagen del personaje
             }}></div>
-
 
             <div style={styles.leftSection}>
                 <LanzarHechizo />
@@ -81,9 +99,8 @@ const styles = {
 
     personaje: {
         position: 'fixed',
-        top: '80%',  // Ajusta el valor para colocar el personaje justo sobre la hierba
         left: '50%',
-        transform: 'translate(-50%, 0)',  // Mantenemos la horizontal centrada y eliminamos el ajuste vertical
+        transform: 'translateX(-50%)',  // Centramos horizontalmente
         width: '100px',
         height: '100px',
         backgroundSize: 'contain',
@@ -91,7 +108,6 @@ const styles = {
         backgroundColor: 'transparent',  // Asegúrate de que el fondo sea transparente
         zIndex: 1,  // Por encima del fondo pero debajo de los hechizos
     },
-
 
     leftSection: {
         width: '35%',
