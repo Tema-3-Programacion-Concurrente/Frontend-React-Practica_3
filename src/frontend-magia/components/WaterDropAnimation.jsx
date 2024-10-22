@@ -95,6 +95,11 @@ export default function WaterStreamAnimation() {
         transition: "left 0.03s linear, top 0.03s linear", // Movimiento más suave y rápido
     };
 
+    const TARGET_POSITION = {
+        x: window.innerWidth / 2,
+        y: window.innerHeight * 0.8  // 80% de la altura de la pantalla
+    };
+
     // Estilos para la salpicadura
     const splashStyle = {
         position: "fixed",

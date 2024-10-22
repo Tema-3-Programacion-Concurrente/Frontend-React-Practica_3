@@ -5,9 +5,9 @@ const AIR_RESISTANCE = 0.02; // Resistencia del aire para la ráfaga
 const GUST_WIDTH_BASE = 100; // Ancho base de la ráfaga de aire
 const GUST_HEIGHT_BASE = 20; // Altura base de la ráfaga de aire
 
-// Configuración de la trayectoria hacia el centro de la pantalla
+// Configuración de la trayectoria hacia el personaje (80% de la pantalla)
 const INITIAL_POSITION = { x: -150, y: window.innerHeight / 2 }; // Posición inicial
-const TARGET_POSITION = { x: window.innerWidth / 2, y: window.innerHeight / 2 }; // Centro de la pantalla
+const TARGET_POSITION = { x: window.innerWidth / 2, y: window.innerHeight * 0.8 }; // Posición del personaje al 80% de la pantalla
 
 // Función modular para calcular la nueva posición de la ráfaga de aire
 const calculatePosition = (t, initialX, initialY, targetX, targetY) => {
@@ -50,12 +50,15 @@ export default function AirGustAnimation() {
                 t,
                 INITIAL_POSITION.x,
                 INITIAL_POSITION.y,
-                TARGET_POSITION.x,
-                TARGET_POSITION.y
+                TARGET_POSITION.x,  // Usa la posición correcta
+                TARGET_POSITION.y   // Usa la posición correcta (80% de la pantalla)
             );
 
-            // Detener la animación y activar el impacto si llega al centro
-            if (x >= TARGET_POSITION.x - 50 && y >= TARGET_POSITION.y - 50) {
+            // Calcular la distancia entre la ráfaga y el personaje
+            const distanceToTarget = Math.hypot(TARGET_POSITION.x - x, TARGET_POSITION.y - y);
+
+            // Detener la animación y activar el impacto si llega al personaje
+            if (distanceToTarget < 30) {  // Reducimos el umbral para mayor precisión
                 clearInterval(animationInterval);
                 setIsImpacting(true); // Activar el impacto
                 setIsVisible(false); // Ocultar la ráfaga de aire
@@ -100,8 +103,8 @@ export default function AirGustAnimation() {
     // Estilos para el impacto de la ráfaga
     const impactStyle = {
         position: "fixed",
-        left: `${TARGET_POSITION.x - 80}px`, // Centrar el impacto
-        top: `${TARGET_POSITION.y - 80}px`,
+        left: `${TARGET_POSITION.x - 80}px`, // Centra la explosión sobre el personaje
+        top: `${TARGET_POSITION.y - 80}px`,  // Centra la explosión sobre el personaje
         width: "160px",
         height: "160px",
         borderRadius: "50%",
@@ -115,7 +118,7 @@ export default function AirGustAnimation() {
             {/* Ráfaga de aire (se oculta si hay un impacto) */}
             {isVisible && !isImpacting && <div style={gustStyle}></div>}
 
-            {/* Impacto de aire al llegar al centro */}
+            {/* Impacto de aire al llegar al personaje */}
             {isImpacting && <div style={impactStyle}></div>}
 
             {/* Keyframes para el impacto */}

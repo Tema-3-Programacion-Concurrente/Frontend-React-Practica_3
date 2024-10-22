@@ -4,9 +4,10 @@ import hechizoService from '../service/hechizoService';
 import FireballAnimation from './FireballAnimation';
 import WaterStreamAnimation from './WaterDropAnimation';
 import AirGustAnimation from './AirGustAnimation';
-import RockExplosionAnimation from './RockExplosionAnimation'; // Importar la animación de la roca
+import RockExplosionAnimation from './RockExplosionAnimation';
+import ElectroHechizo from './ElectroHechizo';  // Importar la animación del hechizo Electro
 
-export default function LanzarHechizo() {
+export default function LanzarHechizo({ onHechizoLanzado }) {
     const [hechizos, setHechizos] = useState([]);
     const [selectedHechizo, setSelectedHechizo] = useState(null);
     const [error, setError] = useState('');
@@ -16,6 +17,7 @@ export default function LanzarHechizo() {
     const [isWaterStreamLaunched, setIsWaterStreamLaunched] = useState(false);
     const [isAirGustLaunched, setIsAirGustLaunched] = useState(false);
     const [isRockExplosionLaunched, setIsRockExplosionLaunched] = useState(false);
+    const [isElectroLaunched, setIsElectroLaunched] = useState(false);  // Nuevo estado para el hechizo Electro
 
     useEffect(() => {
         try {
@@ -49,7 +51,8 @@ export default function LanzarHechizo() {
         setIsFireballLaunched(false);
         setIsWaterStreamLaunched(false);
         setIsAirGustLaunched(false);
-        setIsRockExplosionLaunched(false); // Reiniciar todas las animaciones
+        setIsRockExplosionLaunched(false);
+        setIsElectroLaunched(false);  // Reiniciar la animación de Electro
 
         if (!usuario) {
             setError('Usuario no autenticado.');
@@ -61,7 +64,7 @@ export default function LanzarHechizo() {
         }
 
         try {
-            const updatedPoder = usuario.poder + 1;
+            const updatedPoder = usuario.poder + 1;  // No modificamos el poder de los demás hechizos
             const usuarioData = {
                 ...usuario,
                 poder: updatedPoder,
@@ -76,18 +79,26 @@ export default function LanzarHechizo() {
 
             // Verificar el tipo de hechizo seleccionado
             if (selectedHechizo.nombre.toLowerCase() === 'fuego') {
-                setIsFireballLaunched(true); // Lanzar la bola de fuego
+                setIsFireballLaunched(true);  // Lanzar la bola de fuego
             } else if (selectedHechizo.nombre.toLowerCase() === 'agua') {
-                setIsWaterStreamLaunched(true); // Lanzar el chorro de agua
+                setIsWaterStreamLaunched(true);  // Lanzar el chorro de agua
             } else if (selectedHechizo.nombre.toLowerCase() === 'aire') {
-                setIsAirGustLaunched(true); // Lanzar la ráfaga de aire
+                setIsAirGustLaunched(true);  // Lanzar la ráfaga de aire
             } else if (selectedHechizo.nombre.toLowerCase() === 'roca') {
-                setIsRockExplosionLaunched(true); // Lanzar la explosión de roca
+                setIsRockExplosionLaunched(true);  // Lanzar la explosión de roca
+            } else if (selectedHechizo.nombre.toLowerCase() === 'electro') {
+                setIsElectroLaunched(true);  // Lanzar el rayo eléctrico
             }
+
+            // Disminuir la vida del personaje en función del poder del hechizo
+            onHechizoLanzado(selectedHechizo.poder);  // Enviamos el poder del hechizo al componente padre
         } catch (err) {
-            setError('Error lanzando el hechizo: ' + (err.response?.data || err.message));
+            // Mostrar más detalles del error
+            const errorMessage = err.response?.data?.message || err.response?.data || err.message || 'Error desconocido';
+            setError('Error lanzando el hechizo: ' + errorMessage);
         }
     };
+
 
     const styles = {
         container: {
@@ -194,6 +205,8 @@ export default function LanzarHechizo() {
             {isWaterStreamLaunched && <WaterStreamAnimation />}
             {isAirGustLaunched && <AirGustAnimation />}
             {isRockExplosionLaunched && <RockExplosionAnimation />}
+            {isElectroLaunched && <ElectroHechizo />}  {/* Añadir la animación de Electro */}
+
         </div>
     );
 }

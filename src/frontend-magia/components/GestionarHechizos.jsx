@@ -79,7 +79,7 @@ export default function GestionarHechizos() {
                 />
                 <input
                     type="text"
-                    placeholder="Tipo de Hechizo (fuego, agua, aire, roca)"
+                    placeholder="Tipo de Hechizo (fuego, agua, aire, roca, electro)"
                     value={newHechizo.tipo}
                     onChange={(e) => setNewHechizo({ ...newHechizo, tipo: e.target.value })}
                     required
