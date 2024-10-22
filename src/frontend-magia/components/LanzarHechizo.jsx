@@ -6,7 +6,7 @@ import WaterStreamAnimation from './WaterDropAnimation';
 import AirGustAnimation from './AirGustAnimation';
 import RockExplosionAnimation from './RockExplosionAnimation'; // Importar la animación de la roca
 
-export default function LanzarHechizo() {
+export default function LanzarHechizo({ onHechizoLanzado }) {
     const [hechizos, setHechizos] = useState([]);
     const [selectedHechizo, setSelectedHechizo] = useState(null);
     const [error, setError] = useState('');
@@ -84,6 +84,9 @@ export default function LanzarHechizo() {
             } else if (selectedHechizo.nombre.toLowerCase() === 'roca') {
                 setIsRockExplosionLaunched(true); // Lanzar la explosión de roca
             }
+
+            // Disminuir la vida del personaje en función del poder del hechizo
+            onHechizoLanzado(selectedHechizo.poder); // Llamamos la función recibida por props
         } catch (err) {
             setError('Error lanzando el hechizo: ' + (err.response?.data || err.message));
         }
