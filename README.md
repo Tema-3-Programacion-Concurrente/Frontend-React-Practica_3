@@ -6,7 +6,6 @@ FRONTEND: https://github.com/Tema-3-Programacion-Concurrente/Frontend-React-Prac
 
 BACKEND: https://github.com/Tema-3-Programacion-Concurrente/Backend-Springboot-Aspectos.git
 
-
 # PARTICIPANTES
 
 Jaime López Díaz
@@ -15,22 +14,20 @@ Nicolás Jiménez
 
 Marcos García Benito Bilbao
 
-
 # Experiment Management Frontend
 
-Este proyecto es el frontend de una aplicación React que visualiza e interactua activa y visualmente con multiples pantallas que plantean diferentes sistemas de hechizos, usuarios y eventos mágicos desarrollados gracias a diferentes practicas de (orientacion a Aspectos) con las que se explota la dinámica(momento de aplicación variable) y trasnversal utilizacion de los servicios necesaria planteados en el backend ganando sobretodo en la parte de optimizacion del codigo reduciendo el volumen del mismo y además cumpliendo con todas las posibles variantes de hechizos y sus despliegues idiferentemente.
+Este proyecto consiste en el desarrollo del frontend de una aplicación React que permite la visualización e interacción activa con múltiples pantallas, las cuales presentan diversos sistemas de hechizos, usuarios y eventos mágicos. Estos sistemas han sido desarrollados mediante prácticas de orientación a aspectos, explotando la dinámica y la utilización transversal de los servicios necesarios planteados en el backend. Esto ha permitido optimizar el código, reduciendo su volumen y cumpliendo con todas las posibles variantes de hechizos y sus despliegues.
 
-La aplicación frontend se comunica con el backend para obtener el estado inicial de los datos base apatir de los cuales poder trabajar las diferentes diversiones que ofrece(puesto que se los almacena en local storege) y mostrar las diferentes mecánicas pujantes y actividades de información-gestión de las mismas por paneles que entran bien por lo ojos simepre en base a los usuario "mago" resonsables de las actividades realizadas en la app.
+La aplicación frontend se comunica con el backend para obtener el estado inicial de los datos base, a partir de los cuales se pueden trabajar las diferentes funcionalidades ofrecidas. Estos datos se almacenan en el local storage, permitiendo mostrar diversas mecánicas y actividades de gestión de información a través de paneles visualmente atractivos, siempre en función de los usuarios “mago” responsables de las actividades realizadas en la aplicación.
 
--Extras que se agradecen tener claro esta:
+**Extras a tener en cuenta:**
 
-OJO: Se establece un sistema de nivelado y puntaje asignado a todo usuario (se presenta la clásica mecanica de niveles empezando desde el mas bajo 0 y siendo la principal limitacion los puntos a disposición del jugador que será vitales para poder lanzar los distintos hechizos con coste variado)
+* Se establece un sistema de nivelado y puntaje asignado a cada usuario. Este sistema presenta la clásica mecánica de niveles, comenzando desde el nivel más bajo (0). La principal limitación son los puntos disponibles para el jugador, los cuales son vitales para lanzar los distintos hechizos, cada uno con un coste variado.
+* El sistema de registro de usuario (log-in) se basa en una amplia variedad de campos, diferenciando convenientemente entre administradores y usuarios (magos comunes). Esta diferenciación se refleja en la libertad de uso de los hechizos, basada en el sistema de puntos planteado, que está estrechamente ligado al sistema de puntaje y nivelado.
 
-Se plantea un log-in(registro de usuario) basado en una gran variedad de campos conbenientemente diferenciado entre administrador e usuario(magucho normal) --> (diferenciandose en la libertad de uso de los hechizos en base al sistema de puntos planteado) básicamente este va dado de la mano con el sistema de puntaje y nivelado.
+Para poder probar todas estas funcionalidades sin limitaciones, existen cuentas precreadas para un administrador y un usuario convencional. Estas cuentas tienen el único objetivo de permitir al usuario disfrutar de una experiencia inmersiva completa, especialmente en lo que respecta a los hechizos, ya que la gestión de los mismos no requiere tanta atención visual.
 
-Para poder testear todo esto sin limitaciones existen un administrdor y un usuario convencional con "cuentas-precreadas" establecidas con el único objetivo de que el usuario pueda gozar de la experiencia inmersiva al completo (sobretodo de los hechizos puesto que la gestion de los mismos no exige tanta atencion visual).
-
-En resumen [Panel de log-in/panel de lanzamienton y visualizacion con animaciones y fondo/panel de gestion universal]
+En resumen, la aplicación cuenta con un panel de log-in, un panel de lanzamiento y visualización con animaciones y fondo, y un panel de gestión universal.
 
 ## Tecnologías Utilizadas
 
@@ -92,15 +89,15 @@ En el backend de tu aplicación de gestión de hechizos, se utiliza Spring Boot 
 La aplicación aprovecha la Programación Orientada a Aspectos (AOP) para manejar preocupaciones transversales como el registro, la seguridad y la gestión de transacciones de usuarios y hechios (tematica orincipal).
 
 AOP permite definir estas preocupaciones por separado de la lógica de negocio principal, haciendo el código más limpio y modular. El backend también emplea una arquitectura orientada a servicios con servicios diseñados para manejar operaciones concurrentes de manera eficiente. Estos servicios se instancian utilizando el Patrón de Fábrica, que proporciona una forma de crear objetos sin especificar la clase exacta del objeto que se creará. Esto es particularmente útil para gestionar diferentes tipos de hechizos, cada uno con propiedades y comportamientos únicos.
- 
+
 El Patrón de Fábrica "Factory" asegura que se cree el tipo correcto de servicio de hechizo basado en los parámetros de entrada. Este enfoque, combinado con la gestión de la concurrencia, asegura que múltiples operaciones relacionadas con hechizos puedan procesarse simultáneamente sin degradación del rendimiento, proporcionando una experiencia fluida para los usuarios que lanzan hechizos o gestionan su inventario de hechizos.
 
 ### -Frontend
 
-El frontend, construido con React, consume la API(tema de Rest) para obtener los datos de estado y distribución de varios hechizos, usuarios y eventos mágicos que se han creado, asignado y simulado trnasversalmente gracias un conjunto de prácticas de programacion orientada a aspectos que se infundan antes, durante y posteriormente en los diferentes servicios según convenga para la correcta generación-visualización y gestión de hechizos por pantalla (entre otras cosas). 
+El frontend, desarrollado con React, consume la API REST para obtener los datos de estado y distribución de varios hechizos, usuarios y eventos mágicos que se han creado, asignado y simulado transversalmente gracias a un conjunto de prácticas de programación orientada a aspectos. Estas prácticas se aplican antes, durante y después en los diferentes servicios según convenga, para la correcta generación, visualización y gestión de hechizos por pantalla, entre otras funcionalidades.
 
-Proporciona una interfaz de usuario de múltiples pantallas para disfrutar de diferentes "hechizantes" funcionalidades, incluyendo el registro, lanzamiento y muestra (mediante animaciones) de  distintos hechizos, la gestión (auditoría) basada en el ID del evento, el registro de usuarios (creación de cuentas) y mucho más.
+La aplicación proporciona una interfaz de usuario con múltiples pantallas para disfrutar de diversas funcionalidades, incluyendo el registro, lanzamiento y visualización (mediante animaciones) de distintos hechizos, la gestión (auditoría) basada en el ID del evento, el registro de usuarios (creación de cuentas) y mucho más.
 
-En resumen, ofrece la capacidad de crear, gestionar, eliminar y procesar hechizos y eventos magicos de diferentes tipos de diversas maneras. Destacamos la existencia de perfiles de "mago" pre-creados para que los usuarios sin sus propias cuentas puedan disfrutar de todas las posibilidades experimentales de un mago avanzado.
+En resumen, la aplicación ofrece la capacidad de crear, gestionar, eliminar y procesar hechizos y eventos mágicos de diferentes tipos de diversas maneras. Cabe destacar la existencia de perfiles de “mago” pre-creados, permitiendo a los usuarios sin sus propias cuentas disfrutar de todas las posibilidades experimentales de un mago avanzado.
 
-En resumen tremenda app !!
+En resumen, ¡una aplicación impresionante!
